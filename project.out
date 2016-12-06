@@ -1,0 +1,802 @@
+SQL> 
+SQL> /*
+SQL> CIS 353
+SQL>  - Database Design Project
+SQL> Aaron Teague
+SQL> Kyle Hekhuis
+SQL> Mattie Phillips
+SQL> Michael Strating
+SQL> */
+SQL> 
+SQL> DROP TABLE SEASON CASCADE CONSTRAINTS;
+
+Table dropped.
+
+SQL> DROP TABLE BREWERY CASCADE CONSTRAINTS;
+
+Table dropped.
+
+SQL> DROP TABLE BEER CASCADE CONSTRAINTS;
+
+Table dropped.
+
+SQL> DROP TABLE FOOD CASCADE CONSTRAINTS;
+
+Table dropped.
+
+SQL> DROP TABLE CERTIFIED CASCADE CONSTRAINTS;
+
+Table dropped.
+
+SQL> DROP TABLE EMPLOYEE CASCADE CONSTRAINTS;
+
+Table dropped.
+
+SQL> DROP TABLE JOB CASCADE CONSTRAINTS;
+
+Table dropped.
+
+SQL> DROP TABLE DISTRIBUTOR CASCADE CONSTRAINTS;
+
+Table dropped.
+
+SQL> DROP TABLE INGREDIENTS CASCADE CONSTRAINTS;
+
+Table dropped.
+
+SQL> DROP TABLE BATCH CASCADE CONSTRAINTS;
+
+Table dropped.
+
+SQL> 
+SQL> CREATE TABLE BREWERY(
+  2  	     BreweryID	     INTEGER PRIMARY KEY,
+  3  	     Name	     VARCHAR2(30) NOT NULL,
+  4  	     Location	     VARCHAR2(60)
+  5  );
+
+Table created.
+
+SQL> 
+SQL> 
+SQL> CREATE TABLE FOOD(
+  2  	     FoodID	     INTEGER PRIMARY KEY,
+  3  	     Name	     VARCHAR2(30) NOT NULL,
+  4  	     BreweryID	     INTEGER NOT NULL,
+  5  	     CONSTRAINT Food_BreweryExistConst
+  6  		     FOREIGN KEY (BreweryID)
+  7  		     REFERENCES BREWERY(BreweryID)
+  8  		     ON DELETE CASCADE
+  9  );
+
+Table created.
+
+SQL> 
+SQL> 
+SQL> CREATE TABLE EMPLOYEE(
+  2  	     EmpID	     INTEGER PRIMARY KEY,
+  3  	     Name	     VARCHAR2(30) NOT NULL,
+  4  	     Salary	     INTEGER NOT NULL,
+  5  	     Address	     VARCHAR2(60),
+  6  	     PhoneNumber     INTEGER,
+  7  	     BreweryID	     INTEGER NOT NULL,
+  8  	     MangerID	     INTEGER,
+  9  	     CONSTRAINT Employee_BreweryExistConst FOREIGN KEY (BreweryID) REFERENCES BREWERY(BreweryID)
+ 10  		     ON DELETE CASCADE,
+ 11  	     CONSTRAINT ManagerIsEmpConst FOREIGN KEY (MangerID) REFERENCES EMPLOYEE(EmpID)
+ 12  );
+
+Table created.
+
+SQL> 
+SQL> 
+SQL> CREATE TABLE JOB(
+  2  	     JobID	     INTEGER PRIMARY KEY,
+  3  	     Title	     VARCHAR2(20)
+  4  );
+
+Table created.
+
+SQL> 
+SQL> 
+SQL> CREATE TABLE DISTRIBUTOR(
+  2  	     DistID	     INTEGER PRIMARY KEY,
+  3  	     Name	     VARCHAR2(20),
+  4  	     Location	     VARCHAR2(60),
+  5  	     ContractStart   DATE,
+  6  	     BreweryID	     INTEGER,
+  7  	     CONSTRAINT  Distributor_BreweryExistConst FOREIGN KEY(BreweryID) REFERENCES BREWERY(BreweryID)
+  8  		     ON DELETE CASCADE
+  9  );
+
+Table created.
+
+SQL> 
+SQL> CREATE TABLE SEASON(
+  2  	     SeasonID		     CHAR(5) PRIMARY KEY,
+  3  	     StartDate		     DATE,
+  4  	     EndDate		     DATE,
+  5  	     CONSTRAINT ValidSeason CHECK(SeasonID IN('Su','Sp','F','W','FW','WS','SpSu','SuF','All','FWSp','SuFW','WSpSu','SpSuF'))
+  6  );
+
+Table created.
+
+SQL> 
+SQL> CREATE TABLE BEER(
+  2  	     BeerID	     INTEGER PRIMARY KEY,
+  3  	     Name	     VARCHAR(50),
+  4  	     SeasonID	     CHAR(5),
+  5  	     Type	     VARCHAR(20),
+  6  	     Abv		     DECIMAL,
+  7  	     BreweryID	     INTEGER,
+  8  	     CONSTRAINT Beer_SeasonConst FOREIGN KEY(SeasonID) REFERENCES SEASON(SeasonID)
+  9  		     ON DELETE SET NULL,
+ 10  	     CONSTRAINT Beer_BreweryExistConst FOREIGN KEY(BreweryID) REFERENCES BREWERY(BreweryID),
+ 11  	     CONSTRAINT AbvConst CHECK (Abv < 9.51),
+ 12  	     CONSTRAINT LightTypeConst CHECK ((Type = 'light' AND Abv BETWEEN 2.50 AND 4.50) OR Type != 'light'),
+ 13  	     CONSTRAINT RegTypeConst CHECK ((Type = 'regular' AND Abv < 9.51) OR Type != 'regular'),
+ 14  	     CONSTRAINT NonalcTypeConst CHECK ((Type = 'non-alcoholic' AND Abv <= 1.0) OR Type != 'non-alcoholic'),
+ 15  	     CONSTRAINT TypeConst CHECK (Type IN ('light', 'regular', 'non-alcoholic'))
+ 16  );
+
+Table created.
+
+SQL> 
+SQL> CREATE TABLE BATCH(
+  2  	     BeerID	     INTEGER,
+  3  	     EmpID	     INTEGER,
+  4  	     BatchDate	     DATE,
+  5  	     PH 		     INTEGER,
+  6  	     Color	     CHAR(50),
+  7  	     PRIMARY KEY (BeerID, EmpID, BatchDate),
+  8  	     CONSTRAINT Batch_BeerConst FOREIGN KEY(BeerID) REFERENCES BEER(BeerID)
+  9  		     ON DELETE CASCADE,
+ 10  	     CONSTRAINT Batch_EmployeeConst FOREIGN KEY(EmpID) REFERENCES EMPLOYEE(EmpID)
+ 11  		     ON DELETE CASCADE
+ 12  );
+
+Table created.
+
+SQL> 
+SQL> 
+SQL> CREATE TABLE INGREDIENTS(
+  2  	     BeerID	     INTEGER,
+  3  	     Ingredient      CHAR(30),
+  4  	     PRIMARY KEY (BeerID, Ingredient)
+  5  );
+
+Table created.
+
+SQL> 
+SQL> 
+SQL> CREATE TABLE CERTIFIED(
+  2  EmpID	     INTEGER,
+  3  JobID	     INTEGER,
+  4  PRIMARY KEY(EmpID, JobID)
+  5  );
+
+Table created.
+
+SQL> 
+SQL> 
+SQL> SET FEEDBACK OFF
+SQL> 
+SQL> INSERT INTO BREWERY VALUES(1, 'Kyles Kool Kafe', '1234 Brewery Lane, Grand Rapids, MI 49501');
+SQL> INSERT INTO BREWERY VALUES(2, 'Aarons Place', '1234 Brewery Lane, Grand Rapids, MI 49501');
+SQL> INSERT INTO BREWERY VALUES(3, 'Michaels Backyard', '1234 Brewery Lane, Grand Rapids, MI 49501');
+SQL> 
+SQL> INSERT INTO FOOD VALUES(2, 'Cheeseburger', 1);
+SQL> INSERT INTO FOOD VALUES(3, 'Salad', 1);
+SQL> INSERT INTO FOOD VALUES(4, 'Pizza', 2);
+SQL> INSERT INTO FOOD VALUES(5, 'Mozzarella Sticks', 2);
+SQL> INSERT INTO FOOD VALUES(6, 'Wings', 2);
+SQL> INSERT INTO FOOD VALUES(8, 'Grilled Cheese Sandwich', 3);
+SQL> INSERT INTO FOOD VALUES(9, 'Spinach and Artichoke Dip', 3);
+SQL> 
+SQL> INSERT INTO EMPLOYEE VALUES(3,  'Andrew Baker', 70000, '572 126th Ave. Allendale, MI 49401', 6165219874, 1, NULL);
+SQL> INSERT INTO EMPLOYEE VALUES(4,  'Joe Crew', 80000, '931 Home Ave. Allendale, MI 49401', 6165219874, 2, NULL);
+SQL> INSERT INTO EMPLOYEE VALUES(1,  'Joe Crew', 40000, '48294 Home Ave. Allendale, MI 49401', 6165219874, 1, 3);
+SQL> INSERT INTO EMPLOYEE VALUES(2, 'Jane Smith', 35000, '48294 Lane St. Allendale, MI 49401', 6165219874, 1, 3);
+SQL> INSERT INTO EMPLOYEE VALUES(5, 'Jane Smith', 60000, '482 Black St. Allendale, MI 49401', 6165219874, 2, 4);
+SQL> INSERT INTO EMPLOYEE VALUES(6,  'Andrew Baker', 40200, '572 128th Ave. Allendale, MI 49401', 6165219874, 2, 4);
+SQL> 
+SQL> INSERT INTO JOB VALUES(1, 'Bartender');
+SQL> INSERT INTO JOB VALUES(2, 'Accountant');
+SQL> INSERT INTO JOB VALUES(3, 'Brewer');
+SQL> INSERT INTO JOB VALUES(4, 'Janitor');
+SQL> INSERT INTO JOB VALUES(5, 'Manager');
+SQL> INSERT INTO JOB VALUES(6, 'Salesman');
+SQL> 
+SQL> INSERT INTO DISTRIBUTOR VALUES(1, 'Trucking Inc.', '985 2nd St Holland, MI 49423', '5-APR-16', 1);
+SQL> INSERT INTO DISTRIBUTOR VALUES(2, 'Beverage 2 Go', '152 4th St Kalamazoo, MI 49423', '5-APR-16', 1);
+SQL> INSERT INTO DISTRIBUTOR VALUES(3, 'Wine and Liquor', '197 Lane Ave Grand Rapids, MI 49426', '5-APR-16', 2);
+SQL> INSERT INTO DISTRIBUTOR VALUES(4, 'General Sales', '867 Grand River St Holland, MI 49424', '5-APR-16', 2);
+SQL> INSERT INTO DISTRIBUTOR VALUES(5, 'Van De Distributors', '674 8th St Allendale, MI 49426', '5-APR-16', 3);
+SQL> 
+SQL> INSERT INTO SEASON VALUES('Su', '5-APR-16', '8-APR-16');
+SQL> INSERT INTO SEASON VALUES('Sp', '5-APR-16', '8-APR-16');
+SQL> INSERT INTO SEASON VALUES('F', '5-APR-16', '8-APR-16');
+SQL> INSERT INTO SEASON VALUES('W', '5-APR-16', '8-APR-16');
+SQL> INSERT INTO SEASON VALUES('FW', '5-APR-16', '8-APR-16');
+SQL> INSERT INTO SEASON VALUES('WS', '5-APR-16', '8-APR-16');
+SQL> INSERT INTO SEASON VALUES('SpSu', '5-APR-16', '8-APR-16');
+SQL> INSERT INTO SEASON VALUES('SuF', '5-APR-16', '8-APR-16');
+SQL> INSERT INTO SEASON VALUES('All', '5-APR-16', '8-APR-16');
+SQL> INSERT INTO SEASON VALUES('FWSp', '5-APR-16', '8-APR-16');
+SQL> INSERT INTO SEASON VALUES('SuFW', '5-APR-16', '8-APR-16');
+SQL> INSERT INTO SEASON VALUES('WSpSu', '5-APR-16', '8-APR-16');
+SQL> INSERT INTO SEASON VALUES('SpSuF', '5-APR-16', '8-APR-16');
+SQL> 
+SQL> INSERT INTO BEER VALUES(1, 'Black Horse Premium Draft Beer Black Horse', 'Su', 'regular', 4.74, 1);
+SQL> INSERT INTO BEER VALUES(2, 'Cerveza Tecate Beer Cervecerla Cauhtemoc', 'Sp', 'regular', 4.59, 2);
+SQL> INSERT INTO BEER VALUES(3, 'Genesee Beer Genesee', 'F', 'regular', 5.03, 3);
+SQL> INSERT INTO BEER VALUES(4, 'Molson Light Beer Molson', 'W', 'light', 2.51, 1);
+SQL> INSERT INTO BEER VALUES(5, 'Rheingold Extra Light Beer Rheingold', 'FW', 'light', 4.32, 2);
+SQL> INSERT INTO BEER VALUES(6, 'Watneys London Light Beer Watney Combe Reid', 'WS', 'light', 3.56, 3);
+SQL> INSERT INTO BEER VALUES(7, 'Clausthaler Non-Alcoholic Brauerei', 'SpSu', 'non-alcoholic', 0.44, 1);
+SQL> INSERT INTO BEER VALUES(8, 'Elan Swiss Brew Non-Alcoholic Malt Beverage', 'SuF', 'non-alcoholic', 0.50, 2);
+SQL> INSERT INTO BEER VALUES(9, 'Kingsbury Non-Alcoholic Malt Bev. G. Heileman', 'SpSuF', 'non-alcoholic', 0.10, 3);
+SQL> 
+SQL> ----- Inserting values into Ingredients
+SQL> INSERT INTO INGREDIENTS VALUES(1,'Hops');
+SQL> INSERT INTO INGREDIENTS VALUES(1,'Yeast');
+SQL> INSERT INTO INGREDIENTS VALUES(2,'Hops');
+SQL> INSERT INTO INGREDIENTS VALUES(3,'Hops');
+SQL> INSERT INTO INGREDIENTS VALUES(3,'Barley');
+SQL> INSERT INTO INGREDIENTS VALUES(3,'Water');
+SQL> INSERT INTO INGREDIENTS VALUES(4,'Hops');
+SQL> INSERT INTO INGREDIENTS VALUES(4,'Bourbon');
+SQL> INSERT INTO INGREDIENTS VALUES(5,'Hops');
+SQL> INSERT INTO INGREDIENTS VALUES(6,'Fruit');
+SQL> INSERT INTO INGREDIENTS VALUES(7,'Hops');
+SQL> INSERT INTO INGREDIENTS VALUES(7,'Barley');
+SQL> INSERT INTO INGREDIENTS VALUES(8,'Hops');
+SQL> INSERT INTO INGREDIENTS VALUES(9,'Water');
+SQL> INSERT INTO INGREDIENTS VALUES(9,'Hops');
+SQL> INSERT INTO INGREDIENTS VALUES(8,'Yeast');
+SQL> INSERT INTO INGREDIENTS VALUES(6,'Water');
+SQL> INSERT INTO INGREDIENTS VALUES(5,'Water');
+SQL> INSERT INTO INGREDIENTS VALUES(4,'Yeast');
+SQL> INSERT INTO INGREDIENTS VALUES(4,'Water');
+SQL> ----- Inserting values into Batch
+SQL> INSERT INTO BATCH VALUES(1, 6, '5-APR-16', 3, 'Orange');
+SQL> INSERT INTO BATCH VALUES(1, 6, '4-APR-16', 3, 'Clear');
+SQL> INSERT INTO BATCH VALUES(8, 2, '5-APR-16', 3, 'Clear, slightly red');
+SQL> INSERT INTO BATCH VALUES(4, 2, '3-APR-16', 5, 'Dark');
+SQL> INSERT INTO BATCH VALUES(2, 6, '5-APR-16', 4, 'Orange');
+SQL> INSERT INTO BATCH VALUES(3, 6, '5-APR-16', 4, 'Clear');
+SQL> INSERT INTO BATCH VALUES(4, 2, '5-APR-16', 3, 'Clear, slightly red');
+SQL> INSERT INTO BATCH VALUES(5, 2, '5-APR-16', 5, 'Dark');
+SQL> INSERT INTO BATCH VALUES(6, 2, '5-APR-16', 5, 'Dark');
+SQL> INSERT INTO BATCH VALUES(7, 6, '5-APR-16', 4, 'Orange');
+SQL> INSERT INTO BATCH VALUES(9, 6, '5-APR-16', 4, 'Clear');
+SQL> ----- Inserting values into Certified
+SQL> INSERT INTO CERTIFIED VALUES(6, 1);
+SQL> INSERT INTO CERTIFIED VALUES(6, 3);
+SQL> INSERT INTO CERTIFIED VALUES(1, 2);
+SQL> INSERT INTO CERTIFIED VALUES(2, 4);
+SQL> INSERT INTO CERTIFIED VALUES(2, 3);
+SQL> INSERT INTO CERTIFIED VALUES(3, 5);
+SQL> INSERT INTO CERTIFIED VALUES(4, 6);
+SQL> INSERT INTO CERTIFIED VALUES(5, 4);
+SQL> 
+SQL> SET FEEDBACK ON
+SQL> COMMIT;
+
+Commit complete.
+
+SQL> 
+SQL> -- Simple select of all database tables
+SQL> SELECT * FROM BREWERY;
+
+ BREWERYID NAME                                                                 
+---------- ------------------------------                                       
+LOCATION                                                                        
+------------------------------------------------------------                    
+         1 Kyles Kool Kafe                                                      
+1234 Brewery Lane, Grand Rapids, MI 49501                                       
+                                                                                
+         2 Aarons Place                                                         
+1234 Brewery Lane, Grand Rapids, MI 49501                                       
+                                                                                
+         3 Michaels Backyard                                                    
+1234 Brewery Lane, Grand Rapids, MI 49501                                       
+                                                                                
+
+3 rows selected.
+
+SQL> SELECT * FROM FOOD;
+
+    FOODID NAME                            BREWERYID                            
+---------- ------------------------------ ----------                            
+         2 Cheeseburger                            1                            
+         3 Salad                                   1                            
+         4 Pizza                                   2                            
+         5 Mozzarella Sticks                       2                            
+         6 Wings                                   2                            
+         8 Grilled Cheese Sandwich                 3                            
+         9 Spinach and Artichoke Dip               3                            
+
+7 rows selected.
+
+SQL> SELECT * FROM EMPLOYEE;
+
+     EMPID NAME                               SALARY                            
+---------- ------------------------------ ----------                            
+ADDRESS                                                      PHONENUMBER        
+------------------------------------------------------------ -----------        
+ BREWERYID   MANGERID                                                           
+---------- ----------                                                           
+         3 Andrew Baker                        70000                            
+572 126th Ave. Allendale, MI 49401                            6165219874        
+         1                                                                      
+                                                                                
+         4 Joe Crew                            80000                            
+931 Home Ave. Allendale, MI 49401                             6165219874        
+         2                                                                      
+
+     EMPID NAME                               SALARY                            
+---------- ------------------------------ ----------                            
+ADDRESS                                                      PHONENUMBER        
+------------------------------------------------------------ -----------        
+ BREWERYID   MANGERID                                                           
+---------- ----------                                                           
+                                                                                
+         1 Joe Crew                            40000                            
+48294 Home Ave. Allendale, MI 49401                           6165219874        
+         1          3                                                           
+                                                                                
+         2 Jane Smith                          35000                            
+48294 Lane St. Allendale, MI 49401                            6165219874        
+
+     EMPID NAME                               SALARY                            
+---------- ------------------------------ ----------                            
+ADDRESS                                                      PHONENUMBER        
+------------------------------------------------------------ -----------        
+ BREWERYID   MANGERID                                                           
+---------- ----------                                                           
+         1          3                                                           
+                                                                                
+         5 Jane Smith                          60000                            
+482 Black St. Allendale, MI 49401                             6165219874        
+         2          4                                                           
+                                                                                
+         6 Andrew Baker                        40200                            
+
+     EMPID NAME                               SALARY                            
+---------- ------------------------------ ----------                            
+ADDRESS                                                      PHONENUMBER        
+------------------------------------------------------------ -----------        
+ BREWERYID   MANGERID                                                           
+---------- ----------                                                           
+572 128th Ave. Allendale, MI 49401                            6165219874        
+         2          4                                                           
+                                                                                
+
+6 rows selected.
+
+SQL> SELECT * FROM JOB;
+
+     JOBID TITLE                                                                
+---------- --------------------                                                 
+         1 Bartender                                                            
+         2 Accountant                                                           
+         3 Brewer                                                               
+         4 Janitor                                                              
+         5 Manager                                                              
+         6 Salesman                                                             
+
+6 rows selected.
+
+SQL> SELECT * FROM DISTRIBUTOR;
+
+    DISTID NAME                                                                 
+---------- --------------------                                                 
+LOCATION                                                     CONTRACTS          
+------------------------------------------------------------ ---------          
+ BREWERYID                                                                      
+----------                                                                      
+         1 Trucking Inc.                                                        
+985 2nd St Holland, MI 49423                                 05-APR-16          
+         1                                                                      
+                                                                                
+         2 Beverage 2 Go                                                        
+152 4th St Kalamazoo, MI 49423                               05-APR-16          
+         1                                                                      
+
+    DISTID NAME                                                                 
+---------- --------------------                                                 
+LOCATION                                                     CONTRACTS          
+------------------------------------------------------------ ---------          
+ BREWERYID                                                                      
+----------                                                                      
+                                                                                
+         3 Wine and Liquor                                                      
+197 Lane Ave Grand Rapids, MI 49426                          05-APR-16          
+         2                                                                      
+                                                                                
+         4 General Sales                                                        
+867 Grand River St Holland, MI 49424                         05-APR-16          
+
+    DISTID NAME                                                                 
+---------- --------------------                                                 
+LOCATION                                                     CONTRACTS          
+------------------------------------------------------------ ---------          
+ BREWERYID                                                                      
+----------                                                                      
+         2                                                                      
+                                                                                
+         5 Van De Distributors                                                  
+674 8th St Allendale, MI 49426                               05-APR-16          
+         3                                                                      
+                                                                                
+
+5 rows selected.
+
+SQL> SELECT * FROM BEER;
+
+    BEERID NAME                                               SEASO             
+---------- -------------------------------------------------- -----             
+TYPE                        ABV  BREWERYID                                      
+-------------------- ---------- ----------                                      
+         1 Black Horse Premium Draft Beer Black Horse         Su                
+regular                       5          1                                      
+                                                                                
+         2 Cerveza Tecate Beer Cervecerla Cauhtemoc           Sp                
+regular                       5          2                                      
+                                                                                
+         3 Genesee Beer Genesee                               F                 
+regular                       5          3                                      
+                                                                                
+
+    BEERID NAME                                               SEASO             
+---------- -------------------------------------------------- -----             
+TYPE                        ABV  BREWERYID                                      
+-------------------- ---------- ----------                                      
+         4 Molson Light Beer Molson                           W                 
+light                         3          1                                      
+                                                                                
+         5 Rheingold Extra Light Beer Rheingold               FW                
+light                         4          2                                      
+                                                                                
+         6 Watneys London Light Beer Watney Combe Reid        WS                
+light                         4          3                                      
+                                                                                
+
+    BEERID NAME                                               SEASO             
+---------- -------------------------------------------------- -----             
+TYPE                        ABV  BREWERYID                                      
+-------------------- ---------- ----------                                      
+         7 Clausthaler Non-Alcoholic Brauerei                 SpSu              
+non-alcoholic                 0          1                                      
+                                                                                
+         8 Elan Swiss Brew Non-Alcoholic Malt Beverage        SuF               
+non-alcoholic                 1          2                                      
+                                                                                
+         9 Kingsbury Non-Alcoholic Malt Bev. G. Heileman      SpSuF             
+non-alcoholic                 0          3                                      
+                                                                                
+
+9 rows selected.
+
+SQL> SELECT * FROM BATCH;
+
+    BEERID      EMPID BATCHDATE         PH                                      
+---------- ---------- --------- ----------                                      
+COLOR                                                                           
+--------------------------------------------------                              
+         1          6 05-APR-16          3                                      
+Orange                                                                          
+                                                                                
+         1          6 04-APR-16          3                                      
+Clear                                                                           
+                                                                                
+         8          2 05-APR-16          3                                      
+Clear, slightly red                                                             
+                                                                                
+
+    BEERID      EMPID BATCHDATE         PH                                      
+---------- ---------- --------- ----------                                      
+COLOR                                                                           
+--------------------------------------------------                              
+         4          2 03-APR-16          5                                      
+Dark                                                                            
+                                                                                
+         2          6 05-APR-16          4                                      
+Orange                                                                          
+                                                                                
+         3          6 05-APR-16          4                                      
+Clear                                                                           
+                                                                                
+
+    BEERID      EMPID BATCHDATE         PH                                      
+---------- ---------- --------- ----------                                      
+COLOR                                                                           
+--------------------------------------------------                              
+         4          2 05-APR-16          3                                      
+Clear, slightly red                                                             
+                                                                                
+         5          2 05-APR-16          5                                      
+Dark                                                                            
+                                                                                
+         6          2 05-APR-16          5                                      
+Dark                                                                            
+                                                                                
+
+    BEERID      EMPID BATCHDATE         PH                                      
+---------- ---------- --------- ----------                                      
+COLOR                                                                           
+--------------------------------------------------                              
+         7          6 05-APR-16          4                                      
+Orange                                                                          
+                                                                                
+         9          6 05-APR-16          4                                      
+Clear                                                                           
+                                                                                
+
+11 rows selected.
+
+SQL> SELECT * FROM INGREDIENTS;
+
+    BEERID INGREDIENT                                                           
+---------- ------------------------------                                       
+         1 Hops                                                                 
+         1 Yeast                                                                
+         2 Hops                                                                 
+         3 Barley                                                               
+         3 Hops                                                                 
+         3 Water                                                                
+         4 Bourbon                                                              
+         4 Hops                                                                 
+         4 Water                                                                
+         4 Yeast                                                                
+         5 Hops                                                                 
+
+    BEERID INGREDIENT                                                           
+---------- ------------------------------                                       
+         5 Water                                                                
+         6 Fruit                                                                
+         6 Water                                                                
+         7 Barley                                                               
+         7 Hops                                                                 
+         8 Hops                                                                 
+         8 Yeast                                                                
+         9 Hops                                                                 
+         9 Water                                                                
+
+20 rows selected.
+
+SQL> SELECT * FROM CERTIFIED;
+
+     EMPID      JOBID                                                           
+---------- ----------                                                           
+         1          2                                                           
+         2          3                                                           
+         2          4                                                           
+         3          5                                                           
+         4          6                                                           
+         5          4                                                           
+         6          1                                                           
+         6          3                                                           
+
+8 rows selected.
+
+SQL> 
+SQL> --Contains IC Constraint Key: Update Brewery breweryID to existing breweryID
+SQL> UPDATE BREWERY SET BreweryID = 1 WHERE BreweryID = 3;
+UPDATE BREWERY SET BreweryID = 1 WHERE BreweryID = 3
+*
+ERROR at line 1:
+ORA-00001: unique constraint (STRATINM.SYS_C00302369) violated 
+
+
+SQL> 
+SQL> --Contains IC Foreign-Key: Insert Food BreweryID to a breweryID that does not exist in table Brewery
+SQL> INSERT INTO FOOD VALUES( 10, 'Breadsticks', 8);
+INSERT INTO FOOD VALUES( 10, 'Breadsticks', 8)
+*
+ERROR at line 1:
+ORA-02291: integrity constraint (STRATINM.FOOD_BREWERYEXISTCONST) violated - 
+parent key not found 
+
+
+SQL> 
+SQL> --Contains IC 1-Attribute: Insert into Season an invalid Season
+SQL> INSERT INTO SEASON VALUES('non', '2-DEC-16', '9-DEC-16');
+INSERT INTO SEASON VALUES('non', '2-DEC-16', '9-DEC-16')
+*
+ERROR at line 1:
+ORA-02290: check constraint (STRATINM.VALIDSEASON) violated 
+
+
+SQL> 
+SQL> --Contains IC 2-Attribute: Insert into Beer a beer with an alcohol content of 8 and type of light
+SQL> INSERT INTO BEER VALUES(10, 'Test Beer', 'Su', 'light', 8.0, 3);
+INSERT INTO BEER VALUES(10, 'Test Beer', 'Su', 'light', 8.0, 3)
+*
+ERROR at line 1:
+ORA-02290: check constraint (STRATINM.LIGHTTYPECONST) violated 
+
+
+SQL> 
+SQL> 
+SQL> -- Testing other constraints
+SQL> INSERT INTO BEER VALUES(3, 'Yuengllng Premium Beer D.G. Yuengling and Son', 'Su', 'regular', 4.65, 3);
+INSERT INTO BEER VALUES(3, 'Yuengllng Premium Beer D.G. Yuengling and Son', 'Su', 'regular', 4.65, 3)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (STRATINM.SYS_C00302390) violated 
+
+
+SQL> INSERT INTO BEER VALUES(10, 'Yuengling Porter D.G. Yuengllng and Son', 'Sp', 'regular', 4.49, 2);
+
+1 row created.
+
+SQL> INSERT INTO BEER VALUES(11, 'Wurzburger Hofbrau Pilsner Beer Wurtzburger Hofbrauag', 'F', 'regular', 9.52, 2);
+INSERT INTO BEER VALUES(11, 'Wurzburger Hofbrau Pilsner Beer Wurtzburger Hofbrauag', 'F', 'regular', 9.52, 2)
+                            *
+ERROR at line 1:
+ORA-12899: value too large for column "STRATINM"."BEER"."NAME" (actual: 53, 
+maximum: 50) 
+
+
+SQL> INSERT INTO BEER VALUES(12, 'Michaels Wuss Beer', 'SpSuF', 'non-alcoholic', 0.00, 3);
+
+1 row created.
+
+SQL> INSERT INTO BEER VALUES(13, 'Utica Club Pilsener Lager Beer West End', 'All', 'light', 2.28, 3);
+INSERT INTO BEER VALUES(13, 'Utica Club Pilsener Lager Beer West End', 'All', 'light', 2.28, 3)
+*
+ERROR at line 1:
+ORA-02290: check constraint (STRATINM.LIGHTTYPECONST) violated 
+
+
+SQL> INSERT INTO BEER VALUES(14, 'Tusker Malt Lager Bia Ni Bora', 'FWSp', 'light', 4.51, 3);
+INSERT INTO BEER VALUES(14, 'Tusker Malt Lager Bia Ni Bora', 'FWSp', 'light', 4.51, 3)
+*
+ERROR at line 1:
+ORA-02290: check constraint (STRATINM.LIGHTTYPECONST) violated 
+
+
+SQL> INSERT INTO BEER VALUES(15, 'Tuborg Export Quality Beer G. Heileman', 'WSpSu', 'non-alcoholic',0.09, 1);
+
+1 row created.
+
+SQL> INSERT INTO BEER VALUES(16, 'Tsingtao Beer Tsingtao', 2, 'non-alcoholic',1.00, 2);
+INSERT INTO BEER VALUES(16, 'Tsingtao Beer Tsingtao', 2, 'non-alcoholic',1.00, 2)
+*
+ERROR at line 1:
+ORA-02291: integrity constraint (STRATINM.BEER_SEASONCONST) violated - parent 
+key not found 
+
+
+SQL> INSERT INTO BEER VALUES(17, 'Matties Hard Cider', 'SpSuF', 'cider', 4.74, 3);
+INSERT INTO BEER VALUES(17, 'Matties Hard Cider', 'SpSuF', 'cider', 4.74, 3)
+*
+ERROR at line 1:
+ORA-02290: check constraint (STRATINM.TYPECONST) violated 
+
+
+SQL> 
+SQL> INSERT INTO BATCH VALUES(10, 2, '5-MAR-2016', 3, 'Clear, slightly red');
+
+1 row created.
+
+SQL> INSERT INTO BATCH VALUES(10, 2, '5-MAR-2016', 5, 'Dark');
+INSERT INTO BATCH VALUES(10, 2, '5-MAR-2016', 5, 'Dark')
+*
+ERROR at line 1:
+ORA-00001: unique constraint (STRATINM.SYS_C00302393) violated 
+
+
+SQL> 
+SQL> --Queries
+SQL> 
+SQL> --1)
+SQL> SELECT  distinct E.Name AS Employee, Br.Name AS Brewery, B.Name AS Beer, Ba.BatchDate AS BrewDate
+  2  FROM    Beer B, Brewery Br, Batch Ba, Employee E
+  3  WHERE   E.BreweryID = Br.BreweryID AND
+  4  		     B.BreweryID = Br.BreweryID AND
+  5  		     Ba.BeerID = B.BeerID AND
+  6  		     Ba.EmpID = E.EmpID AND
+  7  		     B.Abv >=2;
+
+EMPLOYEE                       BREWERY                                          
+------------------------------ ------------------------------                   
+BEER                                               BREWDATE                     
+-------------------------------------------------- ---------                    
+Andrew Baker                   Aarons Place                                     
+Cerveza Tecate Beer Cervecerla Cauhtemoc           05-APR-16                    
+                                                                                
+Jane Smith                     Kyles Kool Kafe                                  
+Molson Light Beer Molson                           05-APR-16                    
+                                                                                
+Jane Smith                     Kyles Kool Kafe                                  
+Molson Light Beer Molson                           03-APR-16                    
+                                                                                
+
+3 rows selected.
+
+SQL> 
+SQL> --4 and 6)
+SQL> select a.breweryid, a.name, a.salary
+  2  From employee a
+  3  Where salary = (select MAX(salary)
+  4  			From employee b
+  5  				Where a.breweryid = b.breweryid);
+
+ BREWERYID NAME                               SALARY                            
+---------- ------------------------------ ----------                            
+         1 Andrew Baker                        70000                            
+         2 Joe Crew                            80000                            
+
+2 rows selected.
+
+SQL> 
+SQL> --5)
+SQL> select count(empid), b.breweryid, b.name
+  2  From employee e, brewery b
+  3  Where e.breweryid = b.breweryid
+  4  Group by b.breweryid, b.name
+  5  Having count(e.empid) > 2
+  6  Order by b.breweryid;
+
+COUNT(EMPID)  BREWERYID NAME                                                    
+------------ ---------- ------------------------------                          
+           3          1 Kyles Kool Kafe                                         
+           3          2 Aarons Place                                            
+
+2 rows selected.
+
+SQL> 
+SQL> --7)
+SQL> Select e.name, e.salary, e.address
+  2  From employee e
+  3  Where empid IN (select empid
+  4  				  From employee e, brewery b
+  5  				  Where e.breweryid = b.breweryid and b.name = 'Kyles Kool Kafe');
+
+NAME                               SALARY                                       
+------------------------------ ----------                                       
+ADDRESS                                                                         
+------------------------------------------------------------                    
+Andrew Baker                        70000                                       
+572 126th Ave. Allendale, MI 49401                                              
+                                                                                
+Joe Crew                            40000                                       
+48294 Home Ave. Allendale, MI 49401                                             
+                                                                                
+Jane Smith                          35000                                       
+48294 Lane St. Allendale, MI 49401                                              
+                                                                                
+
+3 rows selected.
+
+SQL> 
+SQL> --10. RANK Query 'Percent Alcohol'
+SQL> SELECT RANK(4.32) WITHIN GROUP
+  2  (ORDER BY abv)
+  3  FROM beer;
+
+RANK(4.32)WITHINGROUP(ORDERBYABV)                                               
+---------------------------------                                               
+                               10                                               
+
+1 row selected.
+
+SQL> 
+SQL> 
+SQL> --11. TOP N Query
+SQL> SELECT empid, name, salary
+  2  FROM employee
+  3  WHERE ROWNUM < 3;
+
+     EMPID NAME                               SALARY                            
+---------- ------------------------------ ----------                            
+         3 Andrew Baker                        70000                            
+         4 Joe Crew                            80000                            
+
+2 rows selected.
+
+SQL> 
+SQL> SPOOL OFF

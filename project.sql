@@ -264,6 +264,16 @@ INSERT INTO BATCH VALUES(10, 2, '5-MAR-2016', 3, 'Clear, slightly red');
 INSERT INTO BATCH VALUES(10, 2, '5-MAR-2016', 5, 'Dark');
 
 --Queries
+
+--1)
+SELECT	distinct E.Name AS Employee, Br.Name AS Brewery, B.Name AS Beer, Ba.BatchDate AS BrewDate
+FROM	Beer B, Brewery Br, Batch Ba, Employee E 
+WHERE	E.BreweryID = Br.BreweryID AND
+		B.BreweryID = Br.BreweryID AND
+		Ba.BeerID = B.BeerID AND
+		Ba.EmpID = E.EmpID AND
+		B.Abv >=2;
+
 --4 and 6)
 select a.breweryid, a.name, a.salary
 From employee a
