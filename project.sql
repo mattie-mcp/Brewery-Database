@@ -123,11 +123,11 @@ PRIMARY KEY(EmpID, JobID)
 
 
 SET FEEDBACK OFF
-
+----- Inserting values into Brewery
 INSERT INTO BREWERY VALUES(1, 'Kyles Kool Kafe', '1234 Brewery Lane, Grand Rapids, MI 49501');
 INSERT INTO BREWERY VALUES(2, 'Aarons Place', '1234 Brewery Lane, Grand Rapids, MI 49501');
 INSERT INTO BREWERY VALUES(3, 'Michaels Backyard', '1234 Brewery Lane, Grand Rapids, MI 49501');
-
+----- Inserting values into Food
 INSERT INTO FOOD VALUES(2, 'Cheeseburger', 1);
 INSERT INTO FOOD VALUES(3, 'Salad', 1);
 INSERT INTO FOOD VALUES(4, 'Pizza', 2);
@@ -135,7 +135,7 @@ INSERT INTO FOOD VALUES(5, 'Mozzarella Sticks', 2);
 INSERT INTO FOOD VALUES(6, 'Wings', 2);
 INSERT INTO FOOD VALUES(8, 'Grilled Cheese Sandwich', 3);
 INSERT INTO FOOD VALUES(9, 'Spinach and Artichoke Dip', 3);
-
+----- Inserting values into Employee
 INSERT INTO EMPLOYEE VALUES(3,  'Andrew Baker', 70000, '572 126th Ave. Allendale, MI 49401', 6165219874, 1, NULL);
 INSERT INTO EMPLOYEE VALUES(4,  'Joe Crew', 80000, '931 Home Ave. Allendale, MI 49401', 6165219874, 2, NULL);
 INSERT INTO EMPLOYEE VALUES(1,  'Ella Crew', 40000, '48294 Home Ave. Allendale, MI 49401', 6165219874, 1, 3);
@@ -144,20 +144,20 @@ INSERT INTO EMPLOYEE VALUES(5, 'Brian Smith', 60000, '482 Black St. Allendale, M
 INSERT INTO EMPLOYEE VALUES(6,  'Andrew Broker', 40200, '572 128th Ave. Allendale, MI 49401', 6165219874, 2, 4);
 INSERT INTO EMPLOYEE VALUES(7, 'Elliott Smith', 81000, '482 Black St. Allendale, MI 49401', 6165219874, 3, NULL);
 INSERT INTO EMPLOYEE VALUES(8,  'Martha Craft', 78000, '572 128th Ave. Allendale, MI 49401', 6165219874, 3, NULL);
-
+----- Inserting values into JOB
 INSERT INTO JOB VALUES(1, 'Bartender');
 INSERT INTO JOB VALUES(2, 'Accountant');
 INSERT INTO JOB VALUES(3, 'Brewer');
 INSERT INTO JOB VALUES(4, 'Janitor');
 INSERT INTO JOB VALUES(5, 'Manager');
 INSERT INTO JOB VALUES(6, 'Salesman');
-
+----- Inserting values into DISTRIBUTOR
 INSERT INTO DISTRIBUTOR VALUES(1, 'Trucking Inc.', '985 2nd St Holland, MI 49423', '5-APR-16', 1);
 INSERT INTO DISTRIBUTOR VALUES(2, 'Beverage 2 Go', '152 4th St Kalamazoo, MI 49423', '5-APR-16', 1);
 INSERT INTO DISTRIBUTOR VALUES(3, 'Wine and Liquor', '197 Lane Ave Grand Rapids, MI 49426', '5-APR-16', 2);
 INSERT INTO DISTRIBUTOR VALUES(4, 'General Sales', '867 Grand River St Holland, MI 49424', '5-APR-16', 2);
 INSERT INTO DISTRIBUTOR VALUES(5, 'Van De Distributors', '674 8th St Allendale, MI 49426', '5-APR-16', 3);
-
+----- Inserting values into SEASON
 INSERT INTO SEASON VALUES('Su', '5-APR-16', '8-APR-16');
 INSERT INTO SEASON VALUES('Sp', '5-APR-16', '8-APR-16');
 INSERT INTO SEASON VALUES('F', '5-APR-16', '8-APR-16');
@@ -171,7 +171,7 @@ INSERT INTO SEASON VALUES('FWSp', '5-APR-16', '8-APR-16');
 INSERT INTO SEASON VALUES('SuFW', '5-APR-16', '8-APR-16');
 INSERT INTO SEASON VALUES('WSpSu', '5-APR-16', '8-APR-16');
 INSERT INTO SEASON VALUES('SpSuF', '5-APR-16', '8-APR-16');
-
+----- Inserting values into BEER
 INSERT INTO BEER VALUES(1, 'Black Horse Premium Draft Beer Black Horse', 'Su', 'regular', 4.74, 3);
 INSERT INTO BEER VALUES(2, 'Cerveza Tecate Beer Cervecerla Cauhtemoc', 'Sp', 'regular', 4.59, 2);
 INSERT INTO BEER VALUES(3, 'Genesee Beer Genesee', 'F', 'regular', 5.03, 3);
@@ -181,7 +181,6 @@ INSERT INTO BEER VALUES(6, 'Watneys London Light Beer Watney Combe Reid', 'WS', 
 INSERT INTO BEER VALUES(7, 'Clausthaler Non-Alcoholic Brauerei', 'SpSu', 'non-alcoholic', 0.44, 1);
 INSERT INTO BEER VALUES(8, 'Elan Swiss Brew Non-Alcoholic Malt Beverage', 'SuF', 'non-alcoholic', 0.50, 2);
 INSERT INTO BEER VALUES(9, 'Kingsbury Non-Alcoholic Malt Bev. G. Heileman', 'SpSuF', 'non-alcoholic', 0.10, 3);
-
 ----- Inserting values into Ingredients
 INSERT INTO INGREDIENTS VALUES(1,'Hops');
 INSERT INTO INGREDIENTS VALUES(1,'Yeast');
@@ -240,37 +239,46 @@ SELECT * FROM INGREDIENTS;
 SELECT * FROM CERTIFIED;
 
 
+--Testing: Primary Key constrating of table Brewery
 --Contains IC Constraint Key: Update Brewery breweryID to existing breweryID
-INSERT INTO CERTIFIED VALUES(5,4);
+UPDATE BREWERY SET BreweryID = 1 WHERE BreweryID = 3;
+INSERT INTO BREWERY VALUES(1, "Test Brewery", "A cool location");
 
+--Testing: Food_BreweryExistConst
 --Contains IC Foreign-Key: Insert Food BreweryID to a breweryID that does not exist in table Brewery
 INSERT INTO FOOD VALUES( 10, 'Breadsticks', 8);
+Update FOOD set BreweryId = 102 where FoodID = 2;
 
+--Testing: ValidSeasonConst
 --Contains IC 1-Attribute: Insert into Season an invalid Season
 INSERT INTO SEASON VALUES('non', '2-DEC-16', '9-DEC-16');
+Update Season Set SeasonId = 'XX' where SeasonId = 'Su';
 
+--Testing: LIGHTTYPECONST
 --Contains IC 2-Attribute: Insert into Beer a beer with an alcohol content of 8 and type of light
 INSERT INTO BEER VALUES(10, 'Test Beer', 'Su', 'light', 8.0, 3);
-
-
--- Testing Other Constraints
+UPDATE BEER SET Type = 'light' where BeerId = 2;
 
 --Testing: REGTYPECONST
 INSERT INTO BEER VALUES(10, 'Yuengling Porter D.G. Yuengllng and Son', 'Sp', 'regular', 4.49, 2);
---Testing: LIGHTTYPECONST
-INSERT INTO BEER VALUES(13, 'Utica Club Pilsener Lager Beer West End', 'All', 'light', 2.28, 3);
+UPDATE BEER SET Abv = 2 where BeerId = 2;
 --Testing: NONALCTYPECONST
 INSERT INTO BEER VALUES(15, 'Tuborg Export Quality Beer G. Heileman', 'WSpSu', 'non-alcoholic',0.09, 1);
+UPDATE BEER SET Type = 'non-alcoholic' where BeerId = 2;
 --Testing: SEASONCONST
 INSERT INTO BEER VALUES(16, 'Tsingtao Beer Tsingtao', 2, 'non-alcoholic',1.00, 2);
+UPDATE BEER SET SeasonId = 0 where BeerId = 3;
 --Testing: TYPECONST
 INSERT INTO BEER VALUES(17, 'Matties Hard Cider', 'SpSuF', 'cider', 4.74, 3);
+UPDATE BEER SET Type = 'lager' where BeerId = 4;
 
+--Testing: Batch_BeerConst
+INSERT INTO BATCH VALUES(200, 2, '5-MAR-2016', 5, 'Dark');
+Update Batch set BeerId = 200 where BatchId = 3;
 
-
-INSERT INTO BATCH VALUES(10, 2, '5-MAR-2016', 3, 'Clear, slightly red'); --Goes through
-INSERT INTO BATCH VALUES(10, 2, '5-MAR-2016', 5, 'Dark'); --Fails
-
+--Testing: Batch_EmployeeConst 
+INSERT INTO BATCH VALUES(10, 2, '5-MAR-2016', 5, 'Dark');
+Update Batch set EmpId = 200 where BatchId = 3;
 
 --Queries
 
