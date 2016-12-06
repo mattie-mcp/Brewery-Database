@@ -67,7 +67,7 @@ CREATE TABLE DISTRIBUTOR(
 	BreweryID	INTEGER,
 	CONSTRAINT  Distributor_BreweryExistConst FOREIGN KEY(BreweryID) REFERENCES BREWERY(BreweryID)
 		ON DELETE CASCADE,
-	CONSTRAINT Distributor_BreweryUnique UNIQUE(DistID, BreweryID)
+	CONSTRAINT Distributor_BreweryUnique UNIQUE(BreweryID)
 );
 
 CREATE TABLE SEASON(
@@ -79,7 +79,7 @@ CREATE TABLE SEASON(
 
 CREATE TABLE BEER(
 	BeerID		INTEGER PRIMARY KEY,
-	Name		VARCHAR(50),
+	Name		VARCHAR(60),
 	SeasonID	CHAR(5),
 	Type		VARCHAR(20),
 	Abv			DECIMAL(9,2),
@@ -153,9 +153,7 @@ INSERT INTO JOB VALUES(5, 'Manager');
 INSERT INTO JOB VALUES(6, 'Salesman');
 ----- Inserting values into DISTRIBUTOR
 INSERT INTO DISTRIBUTOR VALUES(1, 'Trucking Inc.', '985 2nd St Holland, MI 49423', '5-APR-16', 1);
-INSERT INTO DISTRIBUTOR VALUES(2, 'Beverage 2 Go', '152 4th St Kalamazoo, MI 49423', '5-APR-16', 1);
 INSERT INTO DISTRIBUTOR VALUES(3, 'Wine and Liquor', '197 Lane Ave Grand Rapids, MI 49426', '5-APR-16', 2);
-INSERT INTO DISTRIBUTOR VALUES(4, 'General Sales', '867 Grand River St Holland, MI 49424', '5-APR-16', 2);
 INSERT INTO DISTRIBUTOR VALUES(5, 'Van De Distributors', '674 8th St Allendale, MI 49426', '5-APR-16', 3);
 ----- Inserting values into SEASON
 INSERT INTO SEASON VALUES('Su', '5-APR-16', '8-APR-16');
@@ -227,7 +225,7 @@ INSERT INTO CERTIFIED VALUES(5, 4);
 SET FEEDBACK ON
 COMMIT;
 
--- Simple select of all database tables
+/*-- Simple select of all database tables
 SELECT * FROM BREWERY;
 SELECT * FROM FOOD;
 SELECT * FROM EMPLOYEE;
@@ -236,7 +234,7 @@ SELECT * FROM DISTRIBUTOR;
 SELECT * FROM BEER;
 SELECT * FROM BATCH;
 SELECT * FROM INGREDIENTS;
-SELECT * FROM CERTIFIED;
+SELECT * FROM CERTIFIED;*/
 
 
 --Testing: Primary Key constrating of table Brewery
@@ -250,6 +248,25 @@ INSERT INTO FOOD VALUES( 10, 'Breadsticks', 8);
 Update FOOD set BreweryId = 102 where FoodID = 2;
 
 --Testing: ValidSeasonConst
+--Testing IC Employee_BreweryExistConst:Employee BreweryID to a BreweryID that does not exist in table Brewery
+INSERT INTO EMPLOYEE VALUES(30, 'Jared Barense', 45000, '234 48th Ave. Allendale, MI 49401', 6168326578, 4, NULL);
+UPDATE EMPLOYEE SET BreweryID = 4 WHERE BreweryID = 3;
+
+--Testing IC ManagerIsEmpConst: Employee ManagerID to a ManagerID that is not an employee
+INSERT INTO EMPLOYEE VALUES(30, 'Jared Barense', 45000, '234 48th Ave. Allendale, MI 49401', 6168326578, 4, 45);
+UPDATE EMPLOYEE SET ManagerID = 28 WHERE ManagerID = 3;
+
+--Testing IC Constraint Key: Update Job JobID to existing JobID
+UPDATE JOB SET JobID = 1 WHERE JobID = 3;
+
+--Testing IC Distributor_BreweryExistConst: Foreign Key BreweryID is a real BreweryID
+INSERT INTO DISTRIBUTOR VALUES(6, 'JJ Packing Co.', '754 James St Allendale, MI 49426', '5-APR-16', 4);
+UPDATE DISTRIBUTOR SET BreweryID = 4 WHERE BreweryID = 1;
+
+--Testing IC Distributor_BreweryUnique: Unique BreweryID
+INSERT INTO DISTRIBUTOR VALUES(2, 'Beverage 2 Go', '152 4th St Kalamazoo, MI 49423', '5-APR-16', 1);
+UPDATE DISTRIBUTOR SET BreweryID = 3 WHERE BreweryID = 1;
+
 --Contains IC 1-Attribute: Insert into Season an invalid Season
 INSERT INTO SEASON VALUES('non', '2-DEC-16', '9-DEC-16');
 Update Season Set SeasonId = 'XX' where SeasonId = 'Su';
