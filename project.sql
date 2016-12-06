@@ -260,8 +260,8 @@ INSERT INTO BEER VALUES(15, 'Tuborg Export Quality Beer G. Heileman', 'WSpSu', '
 INSERT INTO BEER VALUES(16, 'Tsingtao Beer Tsingtao', 2, 'non-alcoholic',1.00, 2);
 INSERT INTO BEER VALUES(17, 'Matties Hard Cider', 'SpSuF', 'cider', 4.74, 3);
 
-INSERT INTO BATCH VALUES(10, 2, '5-MAR-2016', 3, 'Clear, slightly red');
-INSERT INTO BATCH VALUES(10, 2, '5-MAR-2016', 5, 'Dark');
+INSERT INTO BATCH VALUES(10, 2, '5-MAR-2016', 3, 'Clear, slightly red'); --Goes through
+INSERT INTO BATCH VALUES(10, 2, '5-MAR-2016', 5, 'Dark'); --Fails
 
 --Queries
 
@@ -274,8 +274,8 @@ WHERE	E.BreweryID = Br.BreweryID AND
 		Ba.EmpID = E.EmpID AND
 		B.Abv >=2;
 
---2.
-Select e1.EmpId, e2.EmpId
+--2. Select all employees that make more than 60% of their manager's salaries
+Select e1.Name as Employee, e1.Salary as EmployeeSalary, e2.Name as Manager, e2.Salary as ManagerSalary
 From Employee e1, Employee e2
 Where e2.EmpId = e1.ManagerId and (e1.Salary/e2.Salary) > .6;
 
