@@ -74,7 +74,7 @@ CREATE TABLE SEASON(
 	SeasonID		CHAR(5) PRIMARY KEY,
 	StartDate		DATE,
 	EndDate			DATE,
-	CONSTRAINT ValidSeason CHECK(SeasonID IN('Su','Sp','F','W','FW','WS','SpSu','SuF','All','FWSp','SuFW','WSpSu','SpSuF')) 
+	CONSTRAINT ValidSeasonConst CHECK(SeasonID IN('Su','Sp','F','W','FW','WS','SpSu','SuF','All','FWSp','SuFW','WSpSu','SpSuF')) 
 );
 
 CREATE TABLE BEER(
@@ -172,7 +172,7 @@ INSERT INTO SEASON VALUES('SuFW', '5-APR-16', '8-APR-16');
 INSERT INTO SEASON VALUES('WSpSu', '5-APR-16', '8-APR-16');
 INSERT INTO SEASON VALUES('SpSuF', '5-APR-16', '8-APR-16');
 
-INSERT INTO BEER VALUES(1, 'Black Horse Premium Draft Beer Black Horse', 'Su', 'regular', 4.74, 1);
+INSERT INTO BEER VALUES(1, 'Black Horse Premium Draft Beer Black Horse', 'Su', 'regular', 4.74, 3);
 INSERT INTO BEER VALUES(2, 'Cerveza Tecate Beer Cervecerla Cauhtemoc', 'Sp', 'regular', 4.59, 2);
 INSERT INTO BEER VALUES(3, 'Genesee Beer Genesee', 'F', 'regular', 5.03, 3);
 INSERT INTO BEER VALUES(4, 'Molson Light Beer Molson', 'W', 'light', 2.51, 1);
@@ -325,6 +325,11 @@ Where	not exists((select a.beerid
 					Where	r.breweryid = b.breweryid AND
 							b.beerid = a.beerid AND
 							a.color = 'Clear'));
+
+--9. OUTER JOIN
+SELECT		distinct E.EmpID, E.Name, B.BeerID, B.BatchDate
+FROM		Employee E LEFT OUTER JOIN Batch B ON E.EmpID = B.EmpID
+ORDER BY	E.EmpID;
 
 --10. RANK Query 'Percent Alcohol'
 SELECT RANK(4.32) WITHIN GROUP
