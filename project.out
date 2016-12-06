@@ -1,3 +1,4 @@
+SQL> SET ECHO ON
 SQL> 
 SQL> /*
 SQL> CIS 353
@@ -29,8 +30,11 @@ SQL> DROP TABLE CERTIFIED CASCADE CONSTRAINTS;
 Table dropped.
 
 SQL> DROP TABLE EMPLOYEE CASCADE CONSTRAINTS;
+DROP TABLE EMPLOYEE CASCADE CONSTRAINTS
+           *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
 
-Table dropped.
 
 SQL> DROP TABLE JOB CASCADE CONSTRAINTS;
 
@@ -45,8 +49,11 @@ SQL> DROP TABLE INGREDIENTS CASCADE CONSTRAINTS;
 Table dropped.
 
 SQL> DROP TABLE BATCH CASCADE CONSTRAINTS;
+DROP TABLE BATCH CASCADE CONSTRAINTS
+           *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
 
-Table dropped.
 
 SQL> 
 SQL> CREATE TABLE BREWERY(
@@ -80,13 +87,16 @@ SQL> CREATE TABLE EMPLOYEE(
   5  	     Address	     VARCHAR2(60),
   6  	     PhoneNumber     INTEGER,
   7  	     BreweryID	     INTEGER NOT NULL,
-  8  	     MangerID	     INTEGER,
+  8  	     ManagerID	     INTEGER,
   9  	     CONSTRAINT Employee_BreweryExistConst FOREIGN KEY (BreweryID) REFERENCES BREWERY(BreweryID)
  10  		     ON DELETE CASCADE,
  11  	     CONSTRAINT ManagerIsEmpConst FOREIGN KEY (MangerID) REFERENCES EMPLOYEE(EmpID)
  12  );
+	CONSTRAINT ManagerIsEmpConst FOREIGN KEY (MangerID) REFERENCES EMPLOYEE(EmpID)
+	                                          *
+ERROR at line 11:
+ORA-00904: "MANGERID": invalid identifier 
 
-Table created.
 
 SQL> 
 SQL> 
@@ -134,8 +144,8 @@ SQL> CREATE TABLE BEER(
  10  	     CONSTRAINT Beer_BreweryExistConst FOREIGN KEY(BreweryID) REFERENCES BREWERY(BreweryID),
  11  	     CONSTRAINT AbvConst CHECK (Abv < 9.51),
  12  	     CONSTRAINT LightTypeConst CHECK ((Type = 'light' AND Abv BETWEEN 2.50 AND 4.50) OR Type != 'light'),
- 13  	     CONSTRAINT RegTypeConst CHECK ((Type = 'regular' AND Abv < 9.51) OR Type != 'regular'),
- 14  	     CONSTRAINT NonalcTypeConst CHECK ((Type = 'non-alcoholic' AND Abv <= 1.0) OR Type != 'non-alcoholic'),
+ 13  	     CONSTRAINT RegTypeConst CHECK ((Type = 'regular' AND Abv BETWEEN 4.50 AND 9.51) OR Type != 'regular'),
+ 14  	     CONSTRAINT NonalcTypeConst CHECK ((Type = 'non-alcoholic' AND Abv BETWEEN .1 AND 1.0) OR Type != 'non-alcoholic'),
  15  	     CONSTRAINT TypeConst CHECK (Type IN ('light', 'regular', 'non-alcoholic'))
  16  );
 
@@ -154,8 +164,11 @@ SQL> CREATE TABLE BATCH(
  10  	     CONSTRAINT Batch_EmployeeConst FOREIGN KEY(EmpID) REFERENCES EMPLOYEE(EmpID)
  11  		     ON DELETE CASCADE
  12  );
+	CONSTRAINT Batch_EmployeeConst FOREIGN KEY(EmpID) REFERENCES EMPLOYEE(EmpID)
+	                                                             *
+ERROR at line 10:
+ORA-00942: table or view does not exist 
 
-Table created.
 
 SQL> 
 SQL> 
@@ -194,11 +207,47 @@ SQL> INSERT INTO FOOD VALUES(8, 'Grilled Cheese Sandwich', 3);
 SQL> INSERT INTO FOOD VALUES(9, 'Spinach and Artichoke Dip', 3);
 SQL> 
 SQL> INSERT INTO EMPLOYEE VALUES(3,  'Andrew Baker', 70000, '572 126th Ave. Allendale, MI 49401', 6165219874, 1, NULL);
+INSERT INTO EMPLOYEE VALUES(3,  'Andrew Baker', 70000, '572 126th Ave. Allendale, MI 49401', 6165219874, 1, NULL)
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
 SQL> INSERT INTO EMPLOYEE VALUES(4,  'Joe Crew', 80000, '931 Home Ave. Allendale, MI 49401', 6165219874, 2, NULL);
+INSERT INTO EMPLOYEE VALUES(4,  'Joe Crew', 80000, '931 Home Ave. Allendale, MI 49401', 6165219874, 2, NULL)
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
 SQL> INSERT INTO EMPLOYEE VALUES(1,  'Joe Crew', 40000, '48294 Home Ave. Allendale, MI 49401', 6165219874, 1, 3);
+INSERT INTO EMPLOYEE VALUES(1,  'Joe Crew', 40000, '48294 Home Ave. Allendale, MI 49401', 6165219874, 1, 3)
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
 SQL> INSERT INTO EMPLOYEE VALUES(2, 'Jane Smith', 35000, '48294 Lane St. Allendale, MI 49401', 6165219874, 1, 3);
+INSERT INTO EMPLOYEE VALUES(2, 'Jane Smith', 35000, '48294 Lane St. Allendale, MI 49401', 6165219874, 1, 3)
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
 SQL> INSERT INTO EMPLOYEE VALUES(5, 'Jane Smith', 60000, '482 Black St. Allendale, MI 49401', 6165219874, 2, 4);
+INSERT INTO EMPLOYEE VALUES(5, 'Jane Smith', 60000, '482 Black St. Allendale, MI 49401', 6165219874, 2, 4)
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
 SQL> INSERT INTO EMPLOYEE VALUES(6,  'Andrew Baker', 40200, '572 128th Ave. Allendale, MI 49401', 6165219874, 2, 4);
+INSERT INTO EMPLOYEE VALUES(6,  'Andrew Baker', 40200, '572 128th Ave. Allendale, MI 49401', 6165219874, 2, 4)
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
 SQL> 
 SQL> INSERT INTO JOB VALUES(1, 'Bartender');
 SQL> INSERT INTO JOB VALUES(2, 'Accountant');
@@ -234,8 +283,20 @@ SQL> INSERT INTO BEER VALUES(4, 'Molson Light Beer Molson', 'W', 'light', 2.51, 
 SQL> INSERT INTO BEER VALUES(5, 'Rheingold Extra Light Beer Rheingold', 'FW', 'light', 4.32, 2);
 SQL> INSERT INTO BEER VALUES(6, 'Watneys London Light Beer Watney Combe Reid', 'WS', 'light', 3.56, 3);
 SQL> INSERT INTO BEER VALUES(7, 'Clausthaler Non-Alcoholic Brauerei', 'SpSu', 'non-alcoholic', 0.44, 1);
+INSERT INTO BEER VALUES(7, 'Clausthaler Non-Alcoholic Brauerei', 'SpSu', 'non-alcoholic', 0.44, 1)
+*
+ERROR at line 1:
+ORA-02290: check constraint (STRATINM.NONALCTYPECONST) violated 
+
+
 SQL> INSERT INTO BEER VALUES(8, 'Elan Swiss Brew Non-Alcoholic Malt Beverage', 'SuF', 'non-alcoholic', 0.50, 2);
 SQL> INSERT INTO BEER VALUES(9, 'Kingsbury Non-Alcoholic Malt Bev. G. Heileman', 'SpSuF', 'non-alcoholic', 0.10, 3);
+INSERT INTO BEER VALUES(9, 'Kingsbury Non-Alcoholic Malt Bev. G. Heileman', 'SpSuF', 'non-alcoholic', 0.10, 3)
+*
+ERROR at line 1:
+ORA-02290: check constraint (STRATINM.NONALCTYPECONST) violated 
+
+
 SQL> 
 SQL> ----- Inserting values into Ingredients
 SQL> INSERT INTO INGREDIENTS VALUES(1,'Hops');
@@ -260,16 +321,82 @@ SQL> INSERT INTO INGREDIENTS VALUES(4,'Yeast');
 SQL> INSERT INTO INGREDIENTS VALUES(4,'Water');
 SQL> ----- Inserting values into Batch
 SQL> INSERT INTO BATCH VALUES(1, 6, '5-APR-16', 3, 'Orange');
+INSERT INTO BATCH VALUES(1, 6, '5-APR-16', 3, 'Orange')
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
 SQL> INSERT INTO BATCH VALUES(1, 6, '4-APR-16', 3, 'Clear');
+INSERT INTO BATCH VALUES(1, 6, '4-APR-16', 3, 'Clear')
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
 SQL> INSERT INTO BATCH VALUES(8, 2, '5-APR-16', 3, 'Clear, slightly red');
+INSERT INTO BATCH VALUES(8, 2, '5-APR-16', 3, 'Clear, slightly red')
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
 SQL> INSERT INTO BATCH VALUES(4, 2, '3-APR-16', 5, 'Dark');
+INSERT INTO BATCH VALUES(4, 2, '3-APR-16', 5, 'Dark')
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
 SQL> INSERT INTO BATCH VALUES(2, 6, '5-APR-16', 4, 'Orange');
+INSERT INTO BATCH VALUES(2, 6, '5-APR-16', 4, 'Orange')
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
 SQL> INSERT INTO BATCH VALUES(3, 6, '5-APR-16', 4, 'Clear');
+INSERT INTO BATCH VALUES(3, 6, '5-APR-16', 4, 'Clear')
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
 SQL> INSERT INTO BATCH VALUES(4, 2, '5-APR-16', 3, 'Clear, slightly red');
+INSERT INTO BATCH VALUES(4, 2, '5-APR-16', 3, 'Clear, slightly red')
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
 SQL> INSERT INTO BATCH VALUES(5, 2, '5-APR-16', 5, 'Dark');
+INSERT INTO BATCH VALUES(5, 2, '5-APR-16', 5, 'Dark')
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
 SQL> INSERT INTO BATCH VALUES(6, 2, '5-APR-16', 5, 'Dark');
+INSERT INTO BATCH VALUES(6, 2, '5-APR-16', 5, 'Dark')
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
 SQL> INSERT INTO BATCH VALUES(7, 6, '5-APR-16', 4, 'Orange');
+INSERT INTO BATCH VALUES(7, 6, '5-APR-16', 4, 'Orange')
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
 SQL> INSERT INTO BATCH VALUES(9, 6, '5-APR-16', 4, 'Clear');
+INSERT INTO BATCH VALUES(9, 6, '5-APR-16', 4, 'Clear')
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
 SQL> ----- Inserting values into Certified
 SQL> INSERT INTO CERTIFIED VALUES(6, 1);
 SQL> INSERT INTO CERTIFIED VALUES(6, 3);
@@ -320,60 +447,11 @@ SQL> SELECT * FROM FOOD;
 7 rows selected.
 
 SQL> SELECT * FROM EMPLOYEE;
+SELECT * FROM EMPLOYEE
+              *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
 
-     EMPID NAME                               SALARY                            
----------- ------------------------------ ----------                            
-ADDRESS                                                      PHONENUMBER        
------------------------------------------------------------- -----------        
- BREWERYID   MANGERID                                                           
----------- ----------                                                           
-         3 Andrew Baker                        70000                            
-572 126th Ave. Allendale, MI 49401                            6165219874        
-         1                                                                      
-                                                                                
-         4 Joe Crew                            80000                            
-931 Home Ave. Allendale, MI 49401                             6165219874        
-         2                                                                      
-
-     EMPID NAME                               SALARY                            
----------- ------------------------------ ----------                            
-ADDRESS                                                      PHONENUMBER        
------------------------------------------------------------- -----------        
- BREWERYID   MANGERID                                                           
----------- ----------                                                           
-                                                                                
-         1 Joe Crew                            40000                            
-48294 Home Ave. Allendale, MI 49401                           6165219874        
-         1          3                                                           
-                                                                                
-         2 Jane Smith                          35000                            
-48294 Lane St. Allendale, MI 49401                            6165219874        
-
-     EMPID NAME                               SALARY                            
----------- ------------------------------ ----------                            
-ADDRESS                                                      PHONENUMBER        
------------------------------------------------------------- -----------        
- BREWERYID   MANGERID                                                           
----------- ----------                                                           
-         1          3                                                           
-                                                                                
-         5 Jane Smith                          60000                            
-482 Black St. Allendale, MI 49401                             6165219874        
-         2          4                                                           
-                                                                                
-         6 Andrew Baker                        40200                            
-
-     EMPID NAME                               SALARY                            
----------- ------------------------------ ----------                            
-ADDRESS                                                      PHONENUMBER        
------------------------------------------------------------- -----------        
- BREWERYID   MANGERID                                                           
----------- ----------                                                           
-572 128th Ave. Allendale, MI 49401                            6165219874        
-         2          4                                                           
-                                                                                
-
-6 rows selected.
 
 SQL> SELECT * FROM JOB;
 
@@ -467,74 +545,18 @@ light                         4          3
 ---------- -------------------------------------------------- -----             
 TYPE                        ABV  BREWERYID                                      
 -------------------- ---------- ----------                                      
-         7 Clausthaler Non-Alcoholic Brauerei                 SpSu              
-non-alcoholic                 0          1                                      
-                                                                                
          8 Elan Swiss Brew Non-Alcoholic Malt Beverage        SuF               
 non-alcoholic                 1          2                                      
                                                                                 
-         9 Kingsbury Non-Alcoholic Malt Bev. G. Heileman      SpSuF             
-non-alcoholic                 0          3                                      
-                                                                                
 
-9 rows selected.
+7 rows selected.
 
 SQL> SELECT * FROM BATCH;
+SELECT * FROM BATCH
+              *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
 
-    BEERID      EMPID BATCHDATE         PH                                      
----------- ---------- --------- ----------                                      
-COLOR                                                                           
---------------------------------------------------                              
-         1          6 05-APR-16          3                                      
-Orange                                                                          
-                                                                                
-         1          6 04-APR-16          3                                      
-Clear                                                                           
-                                                                                
-         8          2 05-APR-16          3                                      
-Clear, slightly red                                                             
-                                                                                
-
-    BEERID      EMPID BATCHDATE         PH                                      
----------- ---------- --------- ----------                                      
-COLOR                                                                           
---------------------------------------------------                              
-         4          2 03-APR-16          5                                      
-Dark                                                                            
-                                                                                
-         2          6 05-APR-16          4                                      
-Orange                                                                          
-                                                                                
-         3          6 05-APR-16          4                                      
-Clear                                                                           
-                                                                                
-
-    BEERID      EMPID BATCHDATE         PH                                      
----------- ---------- --------- ----------                                      
-COLOR                                                                           
---------------------------------------------------                              
-         4          2 05-APR-16          3                                      
-Clear, slightly red                                                             
-                                                                                
-         5          2 05-APR-16          5                                      
-Dark                                                                            
-                                                                                
-         6          2 05-APR-16          5                                      
-Dark                                                                            
-                                                                                
-
-    BEERID      EMPID BATCHDATE         PH                                      
----------- ---------- --------- ----------                                      
-COLOR                                                                           
---------------------------------------------------                              
-         7          6 05-APR-16          4                                      
-Orange                                                                          
-                                                                                
-         9          6 05-APR-16          4                                      
-Clear                                                                           
-                                                                                
-
-11 rows selected.
 
 SQL> SELECT * FROM INGREDIENTS;
 
@@ -587,7 +609,7 @@ SQL> UPDATE BREWERY SET BreweryID = 1 WHERE BreweryID = 3;
 UPDATE BREWERY SET BreweryID = 1 WHERE BreweryID = 3
 *
 ERROR at line 1:
-ORA-00001: unique constraint (STRATINM.SYS_C00302369) violated 
+ORA-00001: unique constraint (STRATINM.SYS_C00303190) violated 
 
 
 SQL> 
@@ -625,12 +647,15 @@ SQL> INSERT INTO BEER VALUES(3, 'Yuengllng Premium Beer D.G. Yuengling and Son',
 INSERT INTO BEER VALUES(3, 'Yuengllng Premium Beer D.G. Yuengling and Son', 'Su', 'regular', 4.65, 3)
 *
 ERROR at line 1:
-ORA-00001: unique constraint (STRATINM.SYS_C00302390) violated 
+ORA-00001: unique constraint (STRATINM.SYS_C00303205) violated 
 
 
 SQL> INSERT INTO BEER VALUES(10, 'Yuengling Porter D.G. Yuengllng and Son', 'Sp', 'regular', 4.49, 2);
+INSERT INTO BEER VALUES(10, 'Yuengling Porter D.G. Yuengllng and Son', 'Sp', 'regular', 4.49, 2)
+*
+ERROR at line 1:
+ORA-02290: check constraint (STRATINM.REGTYPECONST) violated 
 
-1 row created.
 
 SQL> INSERT INTO BEER VALUES(11, 'Wurzburger Hofbrau Pilsner Beer Wurtzburger Hofbrauag', 'F', 'regular', 9.52, 2);
 INSERT INTO BEER VALUES(11, 'Wurzburger Hofbrau Pilsner Beer Wurtzburger Hofbrauag', 'F', 'regular', 9.52, 2)
@@ -641,8 +666,11 @@ maximum: 50)
 
 
 SQL> INSERT INTO BEER VALUES(12, 'Michaels Wuss Beer', 'SpSuF', 'non-alcoholic', 0.00, 3);
+INSERT INTO BEER VALUES(12, 'Michaels Wuss Beer', 'SpSuF', 'non-alcoholic', 0.00, 3)
+*
+ERROR at line 1:
+ORA-02290: check constraint (STRATINM.NONALCTYPECONST) violated 
 
-1 row created.
 
 SQL> INSERT INTO BEER VALUES(13, 'Utica Club Pilsener Lager Beer West End', 'All', 'light', 2.28, 3);
 INSERT INTO BEER VALUES(13, 'Utica Club Pilsener Lager Beer West End', 'All', 'light', 2.28, 3)
@@ -659,8 +687,11 @@ ORA-02290: check constraint (STRATINM.LIGHTTYPECONST) violated
 
 
 SQL> INSERT INTO BEER VALUES(15, 'Tuborg Export Quality Beer G. Heileman', 'WSpSu', 'non-alcoholic',0.09, 1);
+INSERT INTO BEER VALUES(15, 'Tuborg Export Quality Beer G. Heileman', 'WSpSu', 'non-alcoholic',0.09, 1)
+*
+ERROR at line 1:
+ORA-02290: check constraint (STRATINM.NONALCTYPECONST) violated 
 
-1 row created.
 
 SQL> INSERT INTO BEER VALUES(16, 'Tsingtao Beer Tsingtao', 2, 'non-alcoholic',1.00, 2);
 INSERT INTO BEER VALUES(16, 'Tsingtao Beer Tsingtao', 2, 'non-alcoholic',1.00, 2)
@@ -679,20 +710,23 @@ ORA-02290: check constraint (STRATINM.TYPECONST) violated
 
 SQL> 
 SQL> INSERT INTO BATCH VALUES(10, 2, '5-MAR-2016', 3, 'Clear, slightly red');
+INSERT INTO BATCH VALUES(10, 2, '5-MAR-2016', 3, 'Clear, slightly red')
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
 
-1 row created.
 
 SQL> INSERT INTO BATCH VALUES(10, 2, '5-MAR-2016', 5, 'Dark');
 INSERT INTO BATCH VALUES(10, 2, '5-MAR-2016', 5, 'Dark')
-*
+            *
 ERROR at line 1:
-ORA-00001: unique constraint (STRATINM.SYS_C00302393) violated 
+ORA-00942: table or view does not exist 
 
 
 SQL> 
 SQL> --Queries
 SQL> 
-SQL> --1)
+SQL> --1. Employee, brewery and batch information for all beers with an alcohol content greater than or equal to 2
 SQL> SELECT  distinct E.Name AS Employee, Br.Name AS Brewery, B.Name AS Beer, Ba.BatchDate AS BrewDate
   2  FROM    Beer B, Brewery Br, Batch Ba, Employee E
   3  WHERE   E.BreweryID = Br.BreweryID AND
@@ -700,77 +734,77 @@ SQL> SELECT  distinct E.Name AS Employee, Br.Name AS Brewery, B.Name AS Beer, Ba
   5  		     Ba.BeerID = B.BeerID AND
   6  		     Ba.EmpID = E.EmpID AND
   7  		     B.Abv >=2;
+FROM	Beer B, Brewery Br, Batch Ba, Employee E
+    	                              *
+ERROR at line 2:
+ORA-00942: table or view does not exist 
 
-EMPLOYEE                       BREWERY                                          
------------------------------- ------------------------------                   
-BEER                                               BREWDATE                     
--------------------------------------------------- ---------                    
-Andrew Baker                   Aarons Place                                     
-Cerveza Tecate Beer Cervecerla Cauhtemoc           05-APR-16                    
-                                                                                
-Jane Smith                     Kyles Kool Kafe                                  
-Molson Light Beer Molson                           05-APR-16                    
-                                                                                
-Jane Smith                     Kyles Kool Kafe                                  
-Molson Light Beer Molson                           03-APR-16                    
-                                                                                
-
-3 rows selected.
 
 SQL> 
-SQL> --4 and 6)
+SQL> --2.
+SQL> Select e1.EmpId, e2.EmpId
+  2  From Employee e1, Employee e2
+  3  Where e2.EmpId = e1.ManagerId and (e1.Salary/e2.Salary) > .6;
+From Employee e1, Employee e2
+                  *
+ERROR at line 2:
+ORA-00942: table or view does not exist 
+
+
+SQL> 
+SQL> --3.
+SQL> Select BreweryID, Name
+  2  From Location
+  3  Where Location.BreweryId = 1
+  4  UNION
+  5  Select BreweryId, Name
+  6  From Location
+  7  Where Location.BreweryId = 3;
+From Location
+     *
+ERROR at line 2:
+ORA-00942: table or view does not exist 
+
+
+SQL> 
+SQL> --4 and 6.
 SQL> select a.breweryid, a.name, a.salary
   2  From employee a
   3  Where salary = (select MAX(salary)
   4  			From employee b
   5  				Where a.breweryid = b.breweryid);
+From employee a
+     *
+ERROR at line 2:
+ORA-00942: table or view does not exist 
 
- BREWERYID NAME                               SALARY                            
----------- ------------------------------ ----------                            
-         1 Andrew Baker                        70000                            
-         2 Joe Crew                            80000                            
-
-2 rows selected.
 
 SQL> 
-SQL> --5)
+SQL> --5.
 SQL> select count(empid), b.breweryid, b.name
   2  From employee e, brewery b
   3  Where e.breweryid = b.breweryid
   4  Group by b.breweryid, b.name
   5  Having count(e.empid) > 2
   6  Order by b.breweryid;
+From employee e, brewery b
+     *
+ERROR at line 2:
+ORA-00942: table or view does not exist 
 
-COUNT(EMPID)  BREWERYID NAME                                                    
------------- ---------- ------------------------------                          
-           3          1 Kyles Kool Kafe                                         
-           3          2 Aarons Place                                            
-
-2 rows selected.
 
 SQL> 
-SQL> --7)
+SQL> --7.
 SQL> Select e.name, e.salary, e.address
   2  From employee e
   3  Where empid IN (select empid
   4  				  From employee e, brewery b
   5  				  Where e.breweryid = b.breweryid and b.name = 'Kyles Kool Kafe');
+From employee e
+     *
+ERROR at line 2:
+ORA-00942: table or view does not exist 
 
-NAME                               SALARY                                       
------------------------------- ----------                                       
-ADDRESS                                                                         
-------------------------------------------------------------                    
-Andrew Baker                        70000                                       
-572 126th Ave. Allendale, MI 49401                                              
-                                                                                
-Joe Crew                            40000                                       
-48294 Home Ave. Allendale, MI 49401                                             
-                                                                                
-Jane Smith                          35000                                       
-48294 Lane St. Allendale, MI 49401                                              
-                                                                                
-
-3 rows selected.
 
 SQL> 
 SQL> --10. RANK Query 'Percent Alcohol'
@@ -780,7 +814,7 @@ SQL> SELECT RANK(4.32) WITHIN GROUP
 
 RANK(4.32)WITHINGROUP(ORDERBYABV)                                               
 ---------------------------------                                               
-                               10                                               
+                                5                                               
 
 1 row selected.
 
@@ -790,13 +824,11 @@ SQL> --11. TOP N Query
 SQL> SELECT empid, name, salary
   2  FROM employee
   3  WHERE ROWNUM < 3;
+FROM employee
+     *
+ERROR at line 2:
+ORA-00942: table or view does not exist 
 
-     EMPID NAME                               SALARY                            
----------- ------------------------------ ----------                            
-         3 Andrew Baker                        70000                            
-         4 Joe Crew                            80000                            
-
-2 rows selected.
 
 SQL> 
 SQL> SPOOL OFF

@@ -49,7 +49,7 @@ CREATE TABLE EMPLOYEE(
 	ManagerID	INTEGER,
 	CONSTRAINT Employee_BreweryExistConst FOREIGN KEY (BreweryID) REFERENCES BREWERY(BreweryID)
 		ON DELETE CASCADE,
-	CONSTRAINT ManagerIsEmpConst FOREIGN KEY (MangerID) REFERENCES EMPLOYEE(EmpID)
+	CONSTRAINT ManagerIsEmpConst FOREIGN KEY (ManagerID) REFERENCES EMPLOYEE(EmpID)
 );
 
 
@@ -88,8 +88,8 @@ CREATE TABLE BEER(
 	CONSTRAINT Beer_BreweryExistConst FOREIGN KEY(BreweryID) REFERENCES BREWERY(BreweryID),
 	CONSTRAINT AbvConst CHECK (Abv < 9.51),
 	CONSTRAINT LightTypeConst CHECK ((Type = 'light' AND Abv BETWEEN 2.50 AND 4.50) OR Type != 'light'),
-	CONSTRAINT RegTypeConst CHECK ((Type = 'regular' AND Abv < 9.51) OR Type != 'regular'),
-	CONSTRAINT NonalcTypeConst CHECK ((Type = 'non-alcoholic' AND Abv <= 1.0) OR Type != 'non-alcoholic'),
+	CONSTRAINT RegTypeConst CHECK ((Type = 'regular' AND Abv BETWEEN 4.50 AND 9.51) OR Type != 'regular'),
+	CONSTRAINT NonalcTypeConst CHECK ((Type = 'non-alcoholic' AND Abv BETWEEN .1 AND 1.0) OR Type != 'non-alcoholic'),
 	CONSTRAINT TypeConst CHECK (Type IN ('light', 'regular', 'non-alcoholic'))
 );
 
