@@ -46,7 +46,7 @@ CREATE TABLE EMPLOYEE(
 	Address		VARCHAR2(60), 
 	PhoneNumber	INTEGER, 
 	BreweryID	INTEGER NOT NULL, 
-	MangerID	INTEGER,
+	ManagerID	INTEGER,
 	CONSTRAINT Employee_BreweryExistConst FOREIGN KEY (BreweryID) REFERENCES BREWERY(BreweryID)
 		ON DELETE CASCADE,
 	CONSTRAINT ManagerIsEmpConst FOREIGN KEY (MangerID) REFERENCES EMPLOYEE(EmpID)
@@ -265,7 +265,7 @@ INSERT INTO BATCH VALUES(10, 2, '5-MAR-2016', 5, 'Dark');
 
 --Queries
 
---1)
+--1. Employee, brewery and batch information for all beers with an alcohol content greater than or equal to 2
 SELECT	distinct E.Name AS Employee, Br.Name AS Brewery, B.Name AS Beer, Ba.BatchDate AS BrewDate
 FROM	Beer B, Brewery Br, Batch Ba, Employee E 
 WHERE	E.BreweryID = Br.BreweryID AND
