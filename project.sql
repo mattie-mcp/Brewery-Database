@@ -298,22 +298,22 @@ Where salary = (select MAX(salary)
                    From employee b
                            Where a.breweryid = b.breweryid);
 
---5.
+--5. Select the number of employees from each brewery that have 2 or more employees
 select count(empid), b.breweryid, b.name
 From employee e, brewery b
 Where e.breweryid = b.breweryid
 Group by b.breweryid, b.name
-Having count(e.empid) > 2
+Having count(e.empid) >= 2
 Order by b.breweryid;
 
---7.
+--7. Select the employee information for those who work at Kyles Kool Kafe
 Select e.name, e.salary, e.address
 From employee e
 Where empid IN (select empid 
                              From employee e, brewery b
                              Where e.breweryid = b.breweryid and b.name = 'Kyles Kool Kafe');
 
---8. find every employee that works on beer from a batch that is clear 
+--8. For every beer that came from a clear batches, find breweries that sell that beer
 Select	breweryid, name
 From	Brewery r
 Where	not exists((select a.beerid
@@ -331,13 +331,12 @@ SELECT		distinct E.EmpID, E.Name, B.BeerID, B.BatchDate
 FROM		Employee E LEFT OUTER JOIN Batch B ON E.EmpID = B.EmpID
 ORDER BY	E.EmpID;
 
---10. RANK Query 'Percent Alcohol'
+--10. Find the ranking of ABV 4.32 among all beers
 SELECT RANK(4.32) WITHIN GROUP
 (ORDER BY abv)
 FROM beer;
 
-
---11. TOP N Query
+--11. Select employee ID, name, and salary for 3 employees
 SELECT empid, name, salary
 FROM employee
 WHERE ROWNUM < 3;
