@@ -66,7 +66,8 @@ CREATE TABLE DISTRIBUTOR(
 	ContractStart	DATE,
 	BreweryID	INTEGER,
 	CONSTRAINT  Distributor_BreweryExistConst FOREIGN KEY(BreweryID) REFERENCES BREWERY(BreweryID)
-		ON DELETE CASCADE
+		ON DELETE CASCADE,
+	CONSTRAINT Distributor_BreweryUnique UNIQUE(DistID, BreweryID)
 );
 
 CREATE TABLE SEASON(
@@ -81,7 +82,7 @@ CREATE TABLE BEER(
 	Name		VARCHAR(50),
 	SeasonID	CHAR(5),
 	Type		VARCHAR(20),
-	Abv			DECIMAL,
+	Abv			DECIMAL(9,2),
 	BreweryID	INTEGER,
 	CONSTRAINT Beer_SeasonConst FOREIGN KEY(SeasonID) REFERENCES SEASON(SeasonID)
 		ON DELETE SET NULL,
@@ -89,7 +90,7 @@ CREATE TABLE BEER(
 	CONSTRAINT AbvConst CHECK (Abv < 9.51),
 	CONSTRAINT LightTypeConst CHECK ((Type = 'light' AND Abv BETWEEN 2.50 AND 4.50) OR Type != 'light'),
 	CONSTRAINT RegTypeConst CHECK ((Type = 'regular' AND Abv BETWEEN 4.50 AND 9.51) OR Type != 'regular'),
-	CONSTRAINT NonalcTypeConst CHECK ((Type = 'non-alcoholic' AND Abv BETWEEN .1 AND 1.0) OR Type != 'non-alcoholic'),
+	CONSTRAINT NonalcTypeConst CHECK ((Type = 'non-alcoholic' AND Abv BETWEEN 0.10 AND 1.00) OR Type != 'non-alcoholic'),
 	CONSTRAINT TypeConst CHECK (Type IN ('light', 'regular', 'non-alcoholic'))
 );
 
@@ -260,8 +261,8 @@ INSERT INTO BEER VALUES(15, 'Tuborg Export Quality Beer G. Heileman', 'WSpSu', '
 INSERT INTO BEER VALUES(16, 'Tsingtao Beer Tsingtao', 2, 'non-alcoholic',1.00, 2);
 INSERT INTO BEER VALUES(17, 'Matties Hard Cider', 'SpSuF', 'cider', 4.74, 3);
 
-INSERT INTO BATCH VALUES(10, 2, '5-MAR-2016', 3, 'Clear, slightly red');
-INSERT INTO BATCH VALUES(10, 2, '5-MAR-2016', 5, 'Dark');
+INSERT INTO BATCH VALUES(10, 2, '5-MAR-2016', 3, 'Clear, slightly red'); --Goes through
+INSERT INTO BATCH VALUES(10, 2, '5-MAR-2016', 5, 'Dark'); --Fails
 
 --Queries
 
@@ -274,21 +275,21 @@ WHERE	E.BreweryID = Br.BreweryID AND
 		Ba.EmpID = E.EmpID AND
 		B.Abv >=2;
 
---2.
-Select e1.EmpId, e2.EmpId
+--2. Select all employees that make more than 60% of their manager's salaries
+Select e1.Name as Employee, e1.Salary as EmployeeSalary, e2.Name as Manager, e2.Salary as ManagerSalary
 From Employee e1, Employee e2
 Where e2.EmpId = e1.ManagerId and (e1.Salary/e2.Salary) > .6;
 
---3.
-Select BreweryID, Name
-From Location
-Where Location.BreweryId = 1
+--3. All distributors for brewery 1 and 3
+Select Name
+From Distributor
+Where Distributor.BreweryId = 1
 UNION
-Select BreweryId, Name
-From Location
-Where Location.BreweryId = 3; 
+Select Name
+From Distributor
+Where Distributor.BreweryId = 3; 
 
---4 and 6.
+--4 and 6. Select the employees who make the most money from each brewery
 select a.breweryid, a.name, a.salary
 From employee a
 Where salary = (select MAX(salary)
