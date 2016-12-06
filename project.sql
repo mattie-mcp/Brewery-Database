@@ -124,9 +124,9 @@ CREATE TABLE CERTIFIED(
 
 SET FEEDBACK OFF
 ----- Inserting values into Brewery
-INSERT INTO BREWERY VALUES(1, 'Kyles Kool Kafe', '1234 Brewery Lane, Grand Rapids, MI 49501');
-INSERT INTO BREWERY VALUES(2, 'Aarons Place', '1234 Brewery Lane, Grand Rapids, MI 49501');
-INSERT INTO BREWERY VALUES(3, 'Michaels Backyard', '1234 Brewery Lane, Grand Rapids, MI 49501');
+INSERT INTO BREWERY VALUES(1, 'Kyles Kafe', '12345 Craftsman St, Grand Rapids, MI 49501');
+INSERT INTO BREWERY VALUES(2, 'Aarons Place', '12346 Division St, Grand Rapids, MI 49501');
+INSERT INTO BREWERY VALUES(3, 'Michaels Backyard', '12347 Brewery Lane, Grand Rapids, MI 49501');
 ----- Inserting values into Food
 INSERT INTO FOOD VALUES(2, 'Cheeseburger', 1);
 INSERT INTO FOOD VALUES(3, 'Salad', 1);
