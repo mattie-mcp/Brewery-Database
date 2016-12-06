@@ -66,7 +66,8 @@ CREATE TABLE DISTRIBUTOR(
 	ContractStart	DATE,
 	BreweryID	INTEGER,
 	CONSTRAINT  Distributor_BreweryExistConst FOREIGN KEY(BreweryID) REFERENCES BREWERY(BreweryID)
-		ON DELETE CASCADE
+		ON DELETE CASCADE,
+	CONSTRAINT Distributor_BreweryUnique UNIQUE(DistID, BreweryID)
 );
 
 CREATE TABLE SEASON(
@@ -81,7 +82,7 @@ CREATE TABLE BEER(
 	Name		VARCHAR(50),
 	SeasonID	CHAR(5),
 	Type		VARCHAR(20),
-	Abv			DECIMAL,
+	Abv			DECIMAL(9,2),
 	BreweryID	INTEGER,
 	CONSTRAINT Beer_SeasonConst FOREIGN KEY(SeasonID) REFERENCES SEASON(SeasonID)
 		ON DELETE SET NULL,
@@ -89,7 +90,7 @@ CREATE TABLE BEER(
 	CONSTRAINT AbvConst CHECK (Abv < 9.51),
 	CONSTRAINT LightTypeConst CHECK ((Type = 'light' AND Abv BETWEEN 2.50 AND 4.50) OR Type != 'light'),
 	CONSTRAINT RegTypeConst CHECK ((Type = 'regular' AND Abv BETWEEN 4.50 AND 9.51) OR Type != 'regular'),
-	CONSTRAINT NonalcTypeConst CHECK ((Type = 'non-alcoholic' AND Abv BETWEEN .1 AND 1.0) OR Type != 'non-alcoholic'),
+	CONSTRAINT NonalcTypeConst CHECK ((Type = 'non-alcoholic' AND Abv BETWEEN 0.10 AND 1.00) OR Type != 'non-alcoholic'),
 	CONSTRAINT TypeConst CHECK (Type IN ('light', 'regular', 'non-alcoholic'))
 );
 
@@ -311,6 +312,19 @@ From employee e
 Where empid IN (select empid 
                              From employee e, brewery b
                              Where e.breweryid = b.breweryid and b.name = 'Kyles Kool Kafe');
+
+--8. find every employee that works on beer from a batch that is clear 
+Select	breweryid, name
+From	Brewery r
+Where	not exists((select a.beerid
+					From batch a
+					Where a.color = 'Clear')
+					MINUS   
+					(select	a.beerid
+					From	beer  b, batch a
+					Where	r.breweryid = b.breweryid AND
+							b.beerid = a.beerid AND
+							a.color = 'Clear'));
 
 --10. RANK Query 'Percent Alcohol'
 SELECT RANK(4.32) WITHIN GROUP
