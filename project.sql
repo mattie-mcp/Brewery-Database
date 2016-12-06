@@ -116,9 +116,9 @@ CREATE TABLE INGREDIENTS(
 
 
 CREATE TABLE CERTIFIED(
-EmpID		INTEGER,
-JobID		INTEGER,
-PRIMARY KEY(EmpID, JobID)
+	EmpID		INTEGER,
+	JobID		INTEGER,
+	PRIMARY KEY(EmpID, JobID)
 );
 
 
@@ -240,7 +240,7 @@ SELECT * FROM CERTIFIED;
 --Testing: Primary Key constrating of table Brewery
 --Contains IC Constraint Key: Update Brewery breweryID to existing breweryID
 UPDATE BREWERY SET BreweryID = 1 WHERE BreweryID = 3;
-INSERT INTO BREWERY VALUES(1, "Test Brewery", "A cool location");
+INSERT INTO BREWERY VALUES(1, 'Test Brewery', 'A cool location');
 
 --Testing: Food_BreweryExistConst
 --Contains IC Foreign-Key: Insert Food BreweryID to a breweryID that does not exist in table Brewery
@@ -298,7 +298,7 @@ INSERT INTO BATCH VALUES(200, 2, '5-MAR-2016', 5, 'Dark');
 Update Batch set BeerId = 200 where BeerId = 3;
 
 --Testing: Batch_EmployeeConst 
-INSERT INTO BATCH VALUES(7, 2, '5-MAR-2016', 5, 'Dark');
+INSERT INTO BATCH VALUES(7, 800, '5-MAR-2016', 5, 'Dark');
 Update Batch set EmpId = 200 where BeerId = 3;
 
 --Queries
@@ -375,5 +375,16 @@ FROM beer;
 SELECT empid, name, salary
 FROM employee
 WHERE ROWNUM < 3;
+
+--Extra Queries
+--Find all jobs employees are certified for
+SELECT		E.EmpID, E.Name, J.Title
+FROM		Employee E, Certified C, Job J
+WHERE E.EmpId = C.EmpId and C.JobId = J.JobId;
+
+--Select season information for all beers
+SELECT B.Name, B.Type, S.SeasonId, S.StartDate, S.EndDate
+FROM Beer B, Season S
+Where B.SeasonID = S.SeasonID;
 
 SPOOL OFF
