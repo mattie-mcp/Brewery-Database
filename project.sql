@@ -326,7 +326,7 @@ Where	not exists((select a.beerid
 							b.beerid = a.beerid AND
 							a.color = 'Clear'));
 
---9. OUTER JOIN
+--9. For all employees, find any batchID and dates they may or may not have
 SELECT		distinct E.EmpID, E.Name, B.BeerID, B.BatchDate
 FROM		Employee E LEFT OUTER JOIN Batch B ON E.EmpID = B.EmpID
 ORDER BY	E.EmpID;
