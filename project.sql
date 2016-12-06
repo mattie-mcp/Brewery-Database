@@ -310,6 +310,19 @@ Where empid IN (select empid
                              From employee e, brewery b
                              Where e.breweryid = b.breweryid and b.name = 'Kyles Kool Kafe');
 
+--8. find every employee that works on beer from a batch that is clear 
+Select	breweryid, name
+From	Brewery r
+Where	not exists((select a.beerid
+					From batch a
+					Where a.color = 'Clear')
+					MINUS   
+					(select	a.beerid
+					From	beer  b, batch a
+					Where	r.breweryid = b.breweryid AND
+							b.beerid = a.beerid AND
+							a.color = 'Clear'));
+
 --10. RANK Query 'Percent Alcohol'
 SELECT RANK(4.32) WITHIN GROUP
 (ORDER BY abv)
