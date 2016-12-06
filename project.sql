@@ -274,14 +274,28 @@ WHERE	E.BreweryID = Br.BreweryID AND
 		Ba.EmpID = E.EmpID AND
 		B.Abv >=2;
 
---4 and 6)
+--2.
+Select e1.EmpId, e2.EmpId
+From Employee e1, Employee e2
+Where e2.EmpId = e1.ManagerId and (e1.Salary/e2.Salary) > .6;
+
+--3.
+Select BreweryID, Name
+From Location
+Where Location.BreweryId = 1
+UNION
+Select BreweryId, Name
+From Location
+Where Location.BreweryId = 3; 
+
+--4 and 6.
 select a.breweryid, a.name, a.salary
 From employee a
 Where salary = (select MAX(salary)
                    From employee b
                            Where a.breweryid = b.breweryid);
 
---5)
+--5.
 select count(empid), b.breweryid, b.name
 From employee e, brewery b
 Where e.breweryid = b.breweryid
@@ -289,7 +303,7 @@ Group by b.breweryid, b.name
 Having count(e.empid) > 2
 Order by b.breweryid;
 
---7)
+--7.
 Select e.name, e.salary, e.address
 From employee e
 Where empid IN (select empid 
