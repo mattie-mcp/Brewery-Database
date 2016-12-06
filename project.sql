@@ -67,6 +67,8 @@ CREATE TABLE DISTRIBUTOR(
 	BreweryID	INTEGER,
 	CONSTRAINT  Distributor_BreweryExistConst FOREIGN KEY(BreweryID) REFERENCES BREWERY(BreweryID)
 		ON DELETE CASCADE
+	CONSTRAINT  Distributor_BreweryUnique CHECK(BreweryId NOT IN Select BreweryID FROM DISTRIBUTOR)
+		ON DELETE CASCADE
 );
 
 CREATE TABLE SEASON(
@@ -279,16 +281,16 @@ Select e1.Name as Employee, e1.Salary as EmployeeSalary, e2.Name as Manager, e2.
 From Employee e1, Employee e2
 Where e2.EmpId = e1.ManagerId and (e1.Salary/e2.Salary) > .6;
 
---3.
-Select BreweryID, Name
-From Location
-Where Location.BreweryId = 1
+--3. All distributors for brewery 1 and 3
+Select Name
+From Distributor
+Where Distributor.BreweryId = 1
 UNION
-Select BreweryId, Name
-From Location
-Where Location.BreweryId = 3; 
+Select Name
+From Distributor
+Where Distributor.BreweryId = 3; 
 
---4 and 6.
+--4 and 6. Select the employees who make the most money from each brewery
 select a.breweryid, a.name, a.salary
 From employee a
 Where salary = (select MAX(salary)
