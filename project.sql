@@ -225,7 +225,7 @@ INSERT INTO CERTIFIED VALUES(5, 4);
 SET FEEDBACK ON
 COMMIT;
 
-/*-- Simple select of all database tables
+-- Simple select of all database tables
 SELECT * FROM BREWERY;
 SELECT * FROM FOOD;
 SELECT * FROM EMPLOYEE;
@@ -234,7 +234,7 @@ SELECT * FROM DISTRIBUTOR;
 SELECT * FROM BEER;
 SELECT * FROM BATCH;
 SELECT * FROM INGREDIENTS;
-SELECT * FROM CERTIFIED;*/
+SELECT * FROM CERTIFIED;
 
 
 --Testing: Primary Key constrating of table Brewery
@@ -247,15 +247,15 @@ INSERT INTO BREWERY VALUES(1, "Test Brewery", "A cool location");
 INSERT INTO FOOD VALUES( 10, 'Breadsticks', 8);
 Update FOOD set BreweryId = 102 where FoodID = 2;
 
---Testing: ValidSeasonConst
 --Testing IC Employee_BreweryExistConst:Employee BreweryID to a BreweryID that does not exist in table Brewery
 INSERT INTO EMPLOYEE VALUES(30, 'Jared Barense', 45000, '234 48th Ave. Allendale, MI 49401', 6168326578, 4, NULL);
 UPDATE EMPLOYEE SET BreweryID = 4 WHERE BreweryID = 3;
 
 --Testing IC ManagerIsEmpConst: Employee ManagerID to a ManagerID that is not an employee
-INSERT INTO EMPLOYEE VALUES(30, 'Jared Barense', 45000, '234 48th Ave. Allendale, MI 49401', 6168326578, 4, 45);
+INSERT INTO EMPLOYEE VALUES(30, 'Jared Barense', 45000, '234 48th Ave. Allendale, MI 49401', 6168326578, 3, 45);
 UPDATE EMPLOYEE SET ManagerID = 28 WHERE ManagerID = 3;
 
+--Testing: Job ID primary key constraint
 --Testing IC Constraint Key: Update Job JobID to existing JobID
 UPDATE JOB SET JobID = 1 WHERE JobID = 3;
 
@@ -267,6 +267,7 @@ UPDATE DISTRIBUTOR SET BreweryID = 4 WHERE BreweryID = 1;
 INSERT INTO DISTRIBUTOR VALUES(2, 'Beverage 2 Go', '152 4th St Kalamazoo, MI 49423', '5-APR-16', 1);
 UPDATE DISTRIBUTOR SET BreweryID = 3 WHERE BreweryID = 1;
 
+--Testing: ValidSeasonConst
 --Contains IC 1-Attribute: Insert into Season an invalid Season
 INSERT INTO SEASON VALUES('non', '2-DEC-16', '9-DEC-16');
 Update Season Set SeasonId = 'XX' where SeasonId = 'Su';
@@ -279,23 +280,26 @@ UPDATE BEER SET Type = 'light' where BeerId = 2;
 --Testing: REGTYPECONST
 INSERT INTO BEER VALUES(10, 'Yuengling Porter D.G. Yuengllng and Son', 'Sp', 'regular', 4.49, 2);
 UPDATE BEER SET Abv = 2 where BeerId = 2;
+
 --Testing: NONALCTYPECONST
 INSERT INTO BEER VALUES(15, 'Tuborg Export Quality Beer G. Heileman', 'WSpSu', 'non-alcoholic',0.09, 1);
 UPDATE BEER SET Type = 'non-alcoholic' where BeerId = 2;
+
 --Testing: SEASONCONST
 INSERT INTO BEER VALUES(16, 'Tsingtao Beer Tsingtao', 2, 'non-alcoholic',1.00, 2);
 UPDATE BEER SET SeasonId = 0 where BeerId = 3;
+
 --Testing: TYPECONST
 INSERT INTO BEER VALUES(17, 'Matties Hard Cider', 'SpSuF', 'cider', 4.74, 3);
 UPDATE BEER SET Type = 'lager' where BeerId = 4;
 
 --Testing: Batch_BeerConst
 INSERT INTO BATCH VALUES(200, 2, '5-MAR-2016', 5, 'Dark');
-Update Batch set BeerId = 200 where BatchId = 3;
+Update Batch set BeerId = 200 where BeerId = 3;
 
 --Testing: Batch_EmployeeConst 
-INSERT INTO BATCH VALUES(10, 2, '5-MAR-2016', 5, 'Dark');
-Update Batch set EmpId = 200 where BatchId = 3;
+INSERT INTO BATCH VALUES(7, 2, '5-MAR-2016', 5, 'Dark');
+Update Batch set EmpId = 200 where BeerId = 3;
 
 --Queries
 
