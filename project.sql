@@ -237,8 +237,9 @@ SELECT * FROM BATCH;
 SELECT * FROM INGREDIENTS;
 SELECT * FROM CERTIFIED;*/
 
+
 --Contains IC Constraint Key: Update Brewery breweryID to existing breweryID
-UPDATE BREWERY SET BreweryID = 1 WHERE BreweryID = 3;
+INSERT INTO CERTIFIED VALUES(5,4);
 
 --Contains IC Foreign-Key: Insert Food BreweryID to a breweryID that does not exist in table Brewery
 INSERT INTO FOOD VALUES( 10, 'Breadsticks', 8);
@@ -268,20 +269,24 @@ INSERT INTO SEASON VALUES('non', '2-DEC-16', '9-DEC-16');
 --Contains IC 2-Attribute: Insert into Beer a beer with an alcohol content of 8 and type of light
 INSERT INTO BEER VALUES(10, 'Test Beer', 'Su', 'light', 8.0, 3);
 
+-- Testing Other Constraints
 
--- Testing other constraints (all should, and do, fail)
-INSERT INTO BEER VALUES(3, 'Yuengllng Premium Beer D.G. Yuengling and Son', 'Su', 'regular', 4.65, 3);
+--Testing: REGTYPECONST
 INSERT INTO BEER VALUES(10, 'Yuengling Porter D.G. Yuengllng and Son', 'Sp', 'regular', 4.49, 2);
-INSERT INTO BEER VALUES(11, 'Wurzburger Hofbrau Pilsner Beer Wurtzburger Hofbrauag', 'F', 'regular', 9.52, 2);
-INSERT INTO BEER VALUES(12, 'Michaels Wuss Beer', 'SpSuF', 'non-alcoholic', 0.00, 3);
+--Testing: LIGHTTYPECONST
 INSERT INTO BEER VALUES(13, 'Utica Club Pilsener Lager Beer West End', 'All', 'light', 2.28, 3);
-INSERT INTO BEER VALUES(14, 'Tusker Malt Lager Bia Ni Bora', 'FWSp', 'light', 4.51, 3);
+--Testing: NONALCTYPECONST
 INSERT INTO BEER VALUES(15, 'Tuborg Export Quality Beer G. Heileman', 'WSpSu', 'non-alcoholic',0.09, 1);
+--Testing: SEASONCONST
 INSERT INTO BEER VALUES(16, 'Tsingtao Beer Tsingtao', 2, 'non-alcoholic',1.00, 2);
+--Testing: TYPECONST
 INSERT INTO BEER VALUES(17, 'Matties Hard Cider', 'SpSuF', 'cider', 4.74, 3);
+
+
 
 INSERT INTO BATCH VALUES(10, 2, '5-MAR-2016', 3, 'Clear, slightly red'); --Goes through
 INSERT INTO BATCH VALUES(10, 2, '5-MAR-2016', 5, 'Dark'); --Fails
+
 
 --Queries
 
@@ -343,7 +348,7 @@ Where	not exists((select a.beerid
 							b.beerid = a.beerid AND
 							a.color = 'Clear'));
 
---9. OUTER JOIN
+--9. For all employees, find any batchID and dates they may or may not have
 SELECT		distinct E.EmpID, E.Name, B.BeerID, B.BatchDate
 FROM		Employee E LEFT OUTER JOIN Batch B ON E.EmpID = B.EmpID
 ORDER BY	E.EmpID;
